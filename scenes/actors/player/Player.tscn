@@ -1,3 +1,38 @@
 [gd_scene format=3 uid="uid://cet42dhxvxoit"]
 
-[node name="Player" type="Node3D" unique_id=1989459081]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lxwhc"]
+radius = 0.35
+height = 1.6
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_iugxn"]
+top_radius = 0.35
+bottom_radius = 0.35
+height = 1.6
+
+[node name="Player" type="CharacterBody3D" unique_id=1258140782]
+
+[node name="BodyCollision" type="CollisionShape3D" parent="." unique_id=1967155472]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("CapsuleShape3D_lxwhc")
+
+[node name="VisualRoot" type="Node3D" parent="." unique_id=2046893800]
+
+[node name="AnimationTree" type="AnimationTree" parent="VisualRoot" unique_id=203864727]
+
+[node name="DebugMesh" type="MeshInstance3D" parent="VisualRoot" unique_id=216567658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+mesh = SubResource("CylinderMesh_iugxn")
+
+[node name="CombatRoot" type="Node3D" parent="." unique_id=1989459081]
+
+[node name="RightHandSocket" type="Node3D" parent="CombatRoot" unique_id=1957046670]
+
+[node name="LeftHandSocket" type="Node3D" parent="CombatRoot" unique_id=504085768]
+
+[node name="HitBoxRoot" type="Node3D" parent="CombatRoot" unique_id=1762749112]
+
+[node name="VFXRoot" type="Node3D" parent="CombatRoot" unique_id=1376071995]
+
+[node name="TargetingRoot" type="Node3D" parent="." unique_id=573123912]
+
+[node name="DebugRoot" type="Node3D" parent="." unique_id=1004067351]

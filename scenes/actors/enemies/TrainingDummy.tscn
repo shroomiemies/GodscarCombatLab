@@ -1,3 +1,9 @@
 [gd_scene format=3 uid="uid://qn1gmau2m6bp"]
 
-[node name="TrainingDummy" type="Node3D" unique_id=480776935]
+[node name="TrainingDummy" type="CharacterBody3D" unique_id=152615839]
+
+[node name="VisualRoot" type="Node3D" parent="." unique_id=480776935]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=950019733]
+
+[node name="DebugRoot" type="Node3D" parent="." unique_id=332152268]

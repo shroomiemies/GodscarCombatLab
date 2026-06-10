@@ -1,3 +1,32 @@
 [gd_scene format=3 uid="uid://66rxq32kmv15"]
 
-[node name="TestArenaMain" type="Node3D" unique_id=1071042527]
+[ext_resource type="PackedScene" uid="uid://cet42dhxvxoit" path="res://scenes/actors/player/Player.tscn" id="1_4n1cq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vy3pw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_u7ufk"]
+
+[node name="TestArena_Main" type="Node3D" unique_id=1071042527]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2055996319]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=313534994]
+transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 0, 0, 0)
+
+[node name="ArenaFloor" type="StaticBody3D" parent="." unique_id=462676123]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ArenaFloor" unique_id=1158163165]
+transform = Transform3D(20, 0, 0, 0, 0.2, 0, 0, 0, 20, 0, -0.1, 0)
+shape = SubResource("BoxShape3D_vy3pw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ArenaFloor" unique_id=1797751006]
+transform = Transform3D(20, 0, 0, 0, 0.2, 0, 0, 0, 20, 0, -0.1, 0)
+mesh = SubResource("BoxMesh_u7ufk")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=263444565]
+
+[node name="DebugCamera" type="Camera3D" parent="." unique_id=860885128]
+transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 8, 10)
+current = true
+
+[node name="Player" parent="." unique_id=1989459081 instance=ExtResource("1_4n1cq")]

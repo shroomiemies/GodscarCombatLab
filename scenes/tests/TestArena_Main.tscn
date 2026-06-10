@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://66rxq32kmv15"]
 
 [ext_resource type="PackedScene" uid="uid://cet42dhxvxoit" path="res://scenes/actors/player/Player.tscn" id="1_4n1cq"]
+[ext_resource type="Script" uid="uid://dawleowx5jiei" path="res://scripts/actor/Player.gd" id="2_vy3pw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vy3pw"]
 
@@ -30,3 +31,4 @@ transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81
 current = true
 
 [node name="Player" parent="." unique_id=1989459081 instance=ExtResource("1_4n1cq")]
+script = ExtResource("2_vy3pw")

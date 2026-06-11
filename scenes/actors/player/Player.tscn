@@ -1,12 +1,9 @@
 [gd_scene format=3 uid="uid://cet42dhxvxoit"]
 
+[ext_resource type="PackedScene" uid="uid://dx82x0ae7tajb" path="res://art/characters/player_placeholder/mixamo_blue_male/model/Y Bot.fbx" id="1_iugxn"]
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lxwhc"]
 radius = 0.35
-height = 1.6
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_iugxn"]
-top_radius = 0.35
-bottom_radius = 0.35
 height = 1.6
 
 [node name="Player" type="CharacterBody3D" unique_id=1258140782]
@@ -19,9 +16,8 @@ shape = SubResource("CapsuleShape3D_lxwhc")
 
 [node name="AnimationTree" type="AnimationTree" parent="VisualRoot" unique_id=203864727]
 
-[node name="DebugMesh" type="MeshInstance3D" parent="VisualRoot" unique_id=216567658]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
-mesh = SubResource("CylinderMesh_iugxn")
+[node name="CharacterModel" parent="VisualRoot" unique_id=1342526380 instance=ExtResource("1_iugxn")]
+transform = Transform3D(-0.9, 0, -7.86805e-08, 0, 0.9, 0, 7.86805e-08, 0, -0.9, 0, 0, 0)
 
 [node name="CombatRoot" type="Node3D" parent="." unique_id=1989459081]
 

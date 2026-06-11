@@ -2,6 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://cet42dhxvxoit" path="res://scenes/actors/player/Player.tscn" id="1_4n1cq"]
 [ext_resource type="Script" uid="uid://dawleowx5jiei" path="res://scripts/actor/Player.gd" id="2_vy3pw"]
+[ext_resource type="PackedScene" uid="uid://yxt4hw7ybxe" path="res://scenes/camera/CameraRig.tscn" id="3_4difj"]
+[ext_resource type="Script" uid="uid://bp4b1fp6fn6k1" path="res://scripts/camera/CameraRig.gd" id="4_xdqrp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vy3pw"]
 
@@ -26,9 +28,10 @@ mesh = SubResource("BoxMesh_u7ufk")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=263444565]
 
-[node name="DebugCamera" type="Camera3D" parent="." unique_id=860885128]
-transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 8, 10)
-current = true
-
-[node name="Player" parent="." unique_id=1989459081 instance=ExtResource("1_4n1cq")]
+[node name="Player" parent="." unique_id=1989459081 node_paths=PackedStringArray("camera_rig") instance=ExtResource("1_4n1cq")]
 script = ExtResource("2_vy3pw")
+camera_rig = NodePath("../CameraRig")
+
+[node name="CameraRig" parent="." unique_id=843206497 node_paths=PackedStringArray("target") instance=ExtResource("3_4difj")]
+script = ExtResource("4_xdqrp")
+target = NodePath("../Player")

@@ -4,6 +4,8 @@ extends CharacterBody3D
 @export var move_speed: float = 5.0
 @export var acceleration: float = 18.0
 @export var gravity: float = 24.0
+@export var camera_rig: CameraRig
+@export var turn_speed: float = 12.0
 
 var movement_frame: MovementFrame
 
@@ -32,13 +34,20 @@ func _apply_player_movement(delta: float) -> void:
 	var local_move := Vector3(input_vector.x,0,input_vector.y)
 	
 	if local_move.length() > 1.0:
-		local_move.normalized()
+		local_move = local_move.normalized()
 	
-	var world_move := movement_frame.local_direction_to_world(local_move)
+	var movement_basis := movement_frame.basis
+	
+	if camera_rig != null:
+		movement_basis = camera_rig.get_flat_camera_basis()
+	
+	var world_move := movement_basis * local_move
 	var desired_horizontal_velocity := world_move * move_speed
 	
 	velocity.x = move_toward(velocity.x, desired_horizontal_velocity.x, acceleration * delta)
 	velocity.z = move_toward(velocity.z, desired_horizontal_velocity.z, acceleration * delta)
+	
+	_update_facing(world_move, delta)
 	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
@@ -46,3 +55,9 @@ func _apply_player_movement(delta: float) -> void:
 		if velocity.y < 0.0:
 			velocity.y = 0.0
 	
+func _update_facing(world_move: Vector3, delta: float) -> void:
+	if world_move.length_squared() < 0.0001:
+		return
+		
+	var target_yaw := atan2(-world_move.x, -world_move.z)
+	rotation.y = lerp_angle(rotation.y, target_yaw, 1.0 - exp(-turn_speed * delta))

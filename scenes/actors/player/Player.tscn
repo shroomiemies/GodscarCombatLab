@@ -54,19 +54,6 @@ shape = SubResource("CapsuleShape3D_lxwhc")
 
 [node name="PlayerVisual" parent="VisualRoot" unique_id=1971921515 instance=ExtResource("1_u84y5")]
 
-[node name="Skeleton3D" parent="VisualRoot/PlayerVisual/CharacterModel" parent_id_path=PackedInt32Array(1971921515, 1342526380) index="0" unique_id=138339149]
-bones/7/rotation = Quaternion(-0.4538692, -0.5448208, 0.55116683, -0.43975917)
-bones/8/rotation = Quaternion(-0.01047078, -0.0010648548, 0.10114939, 0.9948156)
-bones/27/rotation = Quaternion(1.1490937e-07, 8.601305e-08, -3.2030198e-07, 1)
-bones/28/rotation = Quaternion(2.7337413e-07, 2.968887e-08, 4.4013706e-07, 1)
-bones/29/rotation = Quaternion(1.08906534e-07, 7.739282e-11, 2.3891337e-07, 1)
-bones/31/rotation = Quaternion(0.4538035, -0.5448757, 0.5511121, 0.4398276)
-bones/32/rotation = Quaternion(-0.010435485, 0.0010612741, -0.101149864, 0.99481595)
-bones/52/rotation = Quaternion(1.4901158e-07, -4.4703494e-08, -1.3720546e-07, 1)
-bones/53/rotation = Quaternion(-5.9604638e-08, 1.04308135e-07, 1.0311396e-07, 1)
-bones/55/rotation = Quaternion(2.0292124e-05, -0.006339882, 0.9999755, -0.002969747)
-bones/56/rotation = Quaternion(-0.018134093, 0.00018255042, -0.005920147, 0.999818)
-
 [node name="AnimationPlayer" parent="VisualRoot/PlayerVisual/CharacterModel" parent_id_path=PackedInt32Array(1971921515, 1342526380) index="1" unique_id=598606316]
 "libraries/Falling Idle" = ExtResource("2_r01j6")
 "libraries/Falling To Landing" = ExtResource("3_wg8uo")
@@ -120,9 +107,10 @@ libraries/Walking = ExtResource("37_w8b8q")
 
 [node name="DebugRoot" type="Node3D" parent="." unique_id=1004067351]
 
-[node name="AnimationController" type="Node" parent="." unique_id=2026324121 node_paths=PackedStringArray("animation_player")]
+[node name="AnimationController" type="Node" parent="." unique_id=2026324121 node_paths=PackedStringArray("animation_player", "animation_tree")]
 script = ExtResource("2_u84y5")
 animation_player = NodePath("../VisualRoot/PlayerVisual/CharacterModel/AnimationPlayer")
+animation_tree = NodePath("../VisualRoot/PlayerVisual/CharacterModel/AnimationTree")
 
 [editable path="VisualRoot/PlayerVisual"]
 [editable path="VisualRoot/PlayerVisual/CharacterModel"]

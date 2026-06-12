@@ -3,13 +3,13 @@
 importer="animation_library"
 importer_version=1
 type="AnimationLibrary"
-uid="uid://bstnohka2hr84"
-path="res://.godot/imported/Right Strafe.fbx-e8729e826564180c40916aae3b613d40.res"
+uid="uid://b62lsq7gq86bq"
+path="res://.godot/imported/Jog Backward Diagonal Left.fbx-157caec8087b79bb656810afa3bfebfb.res"
 
 [deps]
 
-source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Right Strafe.fbx"
-dest_files=["res://.godot/imported/Right Strafe.fbx-e8729e826564180c40916aae3b613d40.res"]
+source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Backward Diagonal Left.fbx"
+dest_files=["res://.godot/imported/Jog Backward Diagonal Left.fbx-157caec8087b79bb656810afa3bfebfb.res"]
 
 [params]
 

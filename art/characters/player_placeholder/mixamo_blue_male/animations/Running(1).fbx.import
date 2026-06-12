@@ -3,13 +3,13 @@
 importer="animation_library"
 importer_version=1
 type="AnimationLibrary"
-uid="uid://bstnohka2hr84"
-path="res://.godot/imported/Right Strafe.fbx-e8729e826564180c40916aae3b613d40.res"
+uid="uid://2k1yhikg2cy1"
+path="res://.godot/imported/Running(1).fbx-b4f4a349d2443e265265bff2c271737f.res"
 
 [deps]
 
-source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Right Strafe.fbx"
-dest_files=["res://.godot/imported/Right Strafe.fbx-e8729e826564180c40916aae3b613d40.res"]
+source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Running(1).fbx"
+dest_files=["res://.godot/imported/Running(1).fbx-b4f4a349d2443e265265bff2c271737f.res"]
 
 [params]
 

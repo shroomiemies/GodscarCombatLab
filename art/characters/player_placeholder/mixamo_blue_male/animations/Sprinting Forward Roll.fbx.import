@@ -3,13 +3,13 @@
 importer="animation_library"
 importer_version=1
 type="AnimationLibrary"
-uid="uid://bstnohka2hr84"
-path="res://.godot/imported/Right Strafe.fbx-e8729e826564180c40916aae3b613d40.res"
+uid="uid://mrspbgg5sm7q"
+path="res://.godot/imported/Sprinting Forward Roll.fbx-b3919a43d64edff6c6f85108f3f62e6b.res"
 
 [deps]
 
-source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Right Strafe.fbx"
-dest_files=["res://.godot/imported/Right Strafe.fbx-e8729e826564180c40916aae3b613d40.res"]
+source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Sprinting Forward Roll.fbx"
+dest_files=["res://.godot/imported/Sprinting Forward Roll.fbx-b3919a43d64edff6c6f85108f3f62e6b.res"]
 
 [params]
 

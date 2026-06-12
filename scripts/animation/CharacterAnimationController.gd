@@ -2,22 +2,28 @@ class_name CharacterAnimationController
 extends Node
 
 @export var animation_player: AnimationPlayer
+
 @export var idle_animation_name: StringName = &"Idle/mixamo_com"
+@export var walk_animation_name: StringName = &"Walking/mixamo_com"
+@export var run_animation_name: StringName = &"Jog Forward/mixamo_com"
+
+@export var walk_speed_threshold: float = 0.15
+@export var run_speed_threshold: float = 3.5
+@export var default_blend_time: float = 0.15
 
 var current_animation: StringName = &""
 
 func _ready() -> void:
-	if animation_player != null:
-		print(animation_player.get_animation_list())
+	#if animation_player != null:
+	#	print(animation_player.get_animation_list())
 		
 	_configure_animation_loops()
 	play_idle()
 	
-func play_idle() -> void:
-	play_animation(idle_animation_name)
-	
 func _configure_animation_loops() -> void:
 	_set_animation_looping(idle_animation_name, true)
+	_set_animation_looping(walk_animation_name, true)
+	_set_animation_looping(run_animation_name, true)
 	
 func _set_animation_looping(animation_name: StringName, should_loop: bool) -> void:
 	if animation_player ==null:
@@ -38,6 +44,17 @@ func _set_animation_looping(animation_name: StringName, should_loop: bool) -> vo
 		animation.loop_mode = Animation.LOOP_LINEAR
 	else:
 		animation.loop_mode = Animation.LOOP_NONE 
+		
+func update_locomotion(horizontal_speed: float) -> void:
+	if horizontal_speed <= walk_speed_threshold:
+		play_idle()
+	elif horizontal_speed < run_speed_threshold:
+		play_animation(walk_animation_name)
+	else:
+		play_animation(run_animation_name)
+	
+func play_idle() -> void:
+	play_animation(idle_animation_name)
 	
 func play_animation(animation_name: StringName, custom_blend: float = 0.15) -> void:
 	if animation_player == null:

@@ -3,13 +3,13 @@
 importer="animation_library"
 importer_version=1
 type="AnimationLibrary"
-uid="uid://c5pg7xd1qlnjx"
-path="res://.godot/imported/Run Backward.fbx-53c074faf8f619a696938b3fadc2cc26.res"
+uid="uid://bsfa3yjccos7w"
+path="res://.godot/imported/Running Backward.fbx-c7f405ceceae025b9b0b92b6d4524255.res"
 
 [deps]
 
-source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Run Backward.fbx"
-dest_files=["res://.godot/imported/Run Backward.fbx-53c074faf8f619a696938b3fadc2cc26.res"]
+source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Running Backward.fbx"
+dest_files=["res://.godot/imported/Running Backward.fbx-c7f405ceceae025b9b0b92b6d4524255.res"]
 
 [params]
 

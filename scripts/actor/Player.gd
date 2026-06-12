@@ -7,9 +7,10 @@ extends CharacterBody3D
 @export var camera_rig: CameraRig
 @export var turn_speed: float = 12.0
 
+@onready var animation_controller: CharacterAnimationController = $AnimationController
+
 var movement_frame: MovementFrame
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	movement_frame = MovementFrame.world()
 	
@@ -17,6 +18,7 @@ func _physics_process(delta: float) -> void:
 	_update_movement_frame()
 	_apply_player_movement(delta)
 	move_and_slide()
+	_update_animation()
 	
 func _update_movement_frame() -> void:
 	# For now, the player uses normal world space.
@@ -61,3 +63,10 @@ func _update_facing(world_move: Vector3, delta: float) -> void:
 		
 	var target_yaw := atan2(-world_move.x, -world_move.z)
 	rotation.y = lerp_angle(rotation.y, target_yaw, 1.0 - exp(-turn_speed * delta))
+	
+func _update_animation () -> void:
+	if animation_controller == null:
+		return
+		
+	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
+	animation_controller.update_locomotion(horizontal_velocity.length())

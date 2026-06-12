@@ -1,7 +1,44 @@
 [gd_scene format=3 uid="uid://cet42dhxvxoit"]
 
 [ext_resource type="PackedScene" uid="uid://cx82cvm7lrwf2" path="res://scenes/actors/player/PlayerVisual.tscn" id="1_u84y5"]
+[ext_resource type="AnimationLibrary" uid="uid://ctqmxblyfpr6l" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Falling Idle.fbx" id="2_r01j6"]
 [ext_resource type="Script" uid="uid://c236r3lbbvnh3" path="res://scripts/animation/CharacterAnimationController.gd" id="2_u84y5"]
+[ext_resource type="AnimationLibrary" uid="uid://csniifu0rkm55" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Falling To Landing.fbx" id="3_wg8uo"]
+[ext_resource type="AnimationLibrary" uid="uid://cjy756t5brjrt" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Head Hit.fbx" id="4_2xlsc"]
+[ext_resource type="AnimationLibrary" uid="uid://cm0nqg0bswe64" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Hit To Body.fbx" id="5_x0gu2"]
+[ext_resource type="AnimationLibrary" uid="uid://bbd50v01sn4fk" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Hit To Gut.fbx" id="6_aw8hl"]
+[ext_resource type="AnimationLibrary" uid="uid://xmuanrndnqaj" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Idle.fbx" id="7_iehuc"]
+[ext_resource type="AnimationLibrary" uid="uid://dyfmgjumv5my2" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Backward.fbx" id="8_puhal"]
+[ext_resource type="AnimationLibrary" uid="uid://bmemd1otklhc6" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Backward Diagonal.fbx" id="9_lmjor"]
+[ext_resource type="AnimationLibrary" uid="uid://b62lsq7gq86bq" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Backward Diagonal Left.fbx" id="10_hhmvh"]
+[ext_resource type="AnimationLibrary" uid="uid://cd16jbh11t2l3" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Forward.fbx" id="11_l2qnj"]
+[ext_resource type="AnimationLibrary" uid="uid://cqn7xik5fuvyc" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Forward Diagonal.fbx" id="12_cljil"]
+[ext_resource type="AnimationLibrary" uid="uid://bnqkw6iw6leak" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Forward Diagonal Left.fbx" id="13_dxdpi"]
+[ext_resource type="AnimationLibrary" uid="uid://dn30vrshc36r6" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Strafe Left.fbx" id="14_ooyx5"]
+[ext_resource type="AnimationLibrary" uid="uid://c4kqe27yfm06k" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Strafe Right.fbx" id="15_tlkx3"]
+[ext_resource type="AnimationLibrary" uid="uid://cq1tpvxkjh41g" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jumping Up.fbx" id="16_kbt63"]
+[ext_resource type="AnimationLibrary" uid="uid://bys1jxtrmiyyp" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Kidney Hit.fbx" id="17_hatp4"]
+[ext_resource type="AnimationLibrary" uid="uid://1kh4habqh8p2" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Knocked Down.fbx" id="18_1i3xe"]
+[ext_resource type="AnimationLibrary" uid="uid://2k06n4r6igaw" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Left Strafe.fbx" id="19_ctxrh"]
+[ext_resource type="AnimationLibrary" uid="uid://c18x1f6e0a7c7" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Left Strafe Walking.fbx" id="20_j8wc1"]
+[ext_resource type="AnimationLibrary" uid="uid://bstnohka2hr84" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Right Strafe.fbx" id="21_x8s7l"]
+[ext_resource type="AnimationLibrary" uid="uid://dht0gc6qr33x7" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Right Strafe Walking.fbx" id="22_8hmq3"]
+[ext_resource type="AnimationLibrary" uid="uid://b1r2wxbeyiko6" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Running.fbx" id="23_ajov8"]
+[ext_resource type="AnimationLibrary" uid="uid://bsfa3yjccos7w" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Running Backward.fbx" id="24_fcuog"]
+[ext_resource type="AnimationLibrary" uid="uid://bvnxq4mp8adyt" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Running Jump.fbx" id="25_esv7t"]
+[ext_resource type="AnimationLibrary" uid="uid://db08v3rxp26nv" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Sprint.fbx" id="26_2dt37"]
+[ext_resource type="AnimationLibrary" uid="uid://mrspbgg5sm7q" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Sprinting Forward Roll.fbx" id="27_bmtc7"]
+[ext_resource type="AnimationLibrary" uid="uid://pfhpaq2h532c" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Stable Sword Inward Slash.fbx" id="28_at3kj"]
+[ext_resource type="AnimationLibrary" uid="uid://cb15q4vwyht4y" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Stable Sword Outward Slash.fbx" id="29_o5py7"]
+[ext_resource type="AnimationLibrary" uid="uid://cqdpulvnxti3h" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Dodge Backward.fbx" id="30_7oh0q"]
+[ext_resource type="AnimationLibrary" uid="uid://cj0lt3qve4adh" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Dodge Forward.fbx" id="31_figuj"]
+[ext_resource type="AnimationLibrary" uid="uid://cw35acjkkvmv3" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Dodge Left.fbx" id="32_7pmc6"]
+[ext_resource type="AnimationLibrary" uid="uid://dev3je8hujepm" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Dodge Right.fbx" id="33_y5gqk"]
+[ext_resource type="AnimationLibrary" uid="uid://bry1pmh13opo8" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Up.fbx" id="34_6px3x"]
+[ext_resource type="AnimationLibrary" uid="uid://bc8oyfk1wld4i" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Sword And Shield Idle.fbx" id="35_r6xt7"]
+[ext_resource type="AnimationLibrary" uid="uid://ccx2rpxkrgh0v" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Sword And Shield Slash.fbx" id="36_yaggx"]
+[ext_resource type="AnimationLibrary" uid="uid://bvfgx1r640epp" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Walking.fbx" id="37_w8b8q"]
+[ext_resource type="AnimationLibrary" uid="uid://boucd0f2awvio" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Walking Backwards.fbx" id="38_byteq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lxwhc"]
 radius = 0.35
@@ -29,6 +66,45 @@ bones/52/rotation = Quaternion(1.4901158e-07, -4.4703494e-08, -1.3720546e-07, 1)
 bones/53/rotation = Quaternion(-5.9604638e-08, 1.04308135e-07, 1.0311396e-07, 1)
 bones/55/rotation = Quaternion(2.0292124e-05, -0.006339882, 0.9999755, -0.002969747)
 bones/56/rotation = Quaternion(-0.018134093, 0.00018255042, -0.005920147, 0.999818)
+
+[node name="AnimationPlayer" parent="VisualRoot/PlayerVisual/CharacterModel" parent_id_path=PackedInt32Array(1971921515, 1342526380) index="1" unique_id=598606316]
+"libraries/Falling Idle" = ExtResource("2_r01j6")
+"libraries/Falling To Landing" = ExtResource("3_wg8uo")
+"libraries/Head Hit" = ExtResource("4_2xlsc")
+"libraries/Hit To Body" = ExtResource("5_x0gu2")
+"libraries/Hit To Gut" = ExtResource("6_aw8hl")
+libraries/Idle = ExtResource("7_iehuc")
+"libraries/Jog Backward" = ExtResource("8_puhal")
+"libraries/Jog Backward Diagonal" = ExtResource("9_lmjor")
+"libraries/Jog Backward Diagonal Left" = ExtResource("10_hhmvh")
+"libraries/Jog Forward" = ExtResource("11_l2qnj")
+"libraries/Jog Forward Diagonal" = ExtResource("12_cljil")
+"libraries/Jog Forward Diagonal Left" = ExtResource("13_dxdpi")
+"libraries/Jog Strafe Left" = ExtResource("14_ooyx5")
+"libraries/Jog Strafe Right" = ExtResource("15_tlkx3")
+"libraries/Jumping Up" = ExtResource("16_kbt63")
+"libraries/Kidney Hit" = ExtResource("17_hatp4")
+"libraries/Knocked Down" = ExtResource("18_1i3xe")
+"libraries/Left Strafe" = ExtResource("19_ctxrh")
+"libraries/Left Strafe Walking" = ExtResource("20_j8wc1")
+"libraries/Right Strafe" = ExtResource("21_x8s7l")
+"libraries/Right Strafe Walking" = ExtResource("22_8hmq3")
+libraries/Running = ExtResource("23_ajov8")
+"libraries/Running Backward" = ExtResource("24_fcuog")
+"libraries/Running Jump" = ExtResource("25_esv7t")
+libraries/Sprint = ExtResource("26_2dt37")
+"libraries/Sprinting Forward Roll" = ExtResource("27_bmtc7")
+"libraries/Stable Sword Inward Slash" = ExtResource("28_at3kj")
+"libraries/Stable Sword Outward Slash" = ExtResource("29_o5py7")
+"libraries/Standing Dodge Backward" = ExtResource("30_7oh0q")
+"libraries/Standing Dodge Forward" = ExtResource("31_figuj")
+"libraries/Standing Dodge Left" = ExtResource("32_7pmc6")
+"libraries/Standing Dodge Right" = ExtResource("33_y5gqk")
+"libraries/Standing Up" = ExtResource("34_6px3x")
+"libraries/Sword And Shield Idle" = ExtResource("35_r6xt7")
+"libraries/Sword And Shield Slash" = ExtResource("36_yaggx")
+libraries/Walking = ExtResource("37_w8b8q")
+"libraries/Walking Backwards" = ExtResource("38_byteq")
 
 [node name="CombatRoot" type="Node3D" parent="." unique_id=1989459081]
 

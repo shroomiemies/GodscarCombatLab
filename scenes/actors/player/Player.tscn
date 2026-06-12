@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cet42dhxvxoit"]
 
-[ext_resource type="PackedScene" uid="uid://dx82x0ae7tajb" path="res://art/characters/player_placeholder/mixamo_blue_male/model/Y Bot.fbx" id="1_iugxn"]
+[ext_resource type="PackedScene" uid="uid://cx82cvm7lrwf2" path="res://scenes/actors/player/PlayerVisual.tscn" id="1_u84y5"]
+[ext_resource type="Script" uid="uid://c236r3lbbvnh3" path="res://scripts/animation/CharacterAnimationController.gd" id="2_u84y5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lxwhc"]
 radius = 0.35
@@ -14,10 +15,20 @@ shape = SubResource("CapsuleShape3D_lxwhc")
 
 [node name="VisualRoot" type="Node3D" parent="." unique_id=2046893800]
 
-[node name="AnimationTree" type="AnimationTree" parent="VisualRoot" unique_id=203864727]
+[node name="PlayerVisual" parent="VisualRoot" unique_id=1971921515 instance=ExtResource("1_u84y5")]
 
-[node name="CharacterModel" parent="VisualRoot" unique_id=1342526380 instance=ExtResource("1_iugxn")]
-transform = Transform3D(-0.9, 0, -7.86805e-08, 0, 0.9, 0, 7.86805e-08, 0, -0.9, 0, 0, 0)
+[node name="Skeleton3D" parent="VisualRoot/PlayerVisual/CharacterModel" parent_id_path=PackedInt32Array(1971921515, 1342526380) index="0" unique_id=138339149]
+bones/7/rotation = Quaternion(-0.4538692, -0.5448208, 0.55116683, -0.43975917)
+bones/8/rotation = Quaternion(-0.01047078, -0.0010648548, 0.10114939, 0.9948156)
+bones/27/rotation = Quaternion(1.1490937e-07, 8.601305e-08, -3.2030198e-07, 1)
+bones/28/rotation = Quaternion(2.7337413e-07, 2.968887e-08, 4.4013706e-07, 1)
+bones/29/rotation = Quaternion(1.08906534e-07, 7.739282e-11, 2.3891337e-07, 1)
+bones/31/rotation = Quaternion(0.4538035, -0.5448757, 0.5511121, 0.4398276)
+bones/32/rotation = Quaternion(-0.010435485, 0.0010612741, -0.101149864, 0.99481595)
+bones/52/rotation = Quaternion(1.4901158e-07, -4.4703494e-08, -1.3720546e-07, 1)
+bones/53/rotation = Quaternion(-5.9604638e-08, 1.04308135e-07, 1.0311396e-07, 1)
+bones/55/rotation = Quaternion(2.0292124e-05, -0.006339882, 0.9999755, -0.002969747)
+bones/56/rotation = Quaternion(-0.018134093, 0.00018255042, -0.005920147, 0.999818)
 
 [node name="CombatRoot" type="Node3D" parent="." unique_id=1989459081]
 
@@ -32,3 +43,10 @@ transform = Transform3D(-0.9, 0, -7.86805e-08, 0, 0.9, 0, 7.86805e-08, 0, -0.9, 
 [node name="TargetingRoot" type="Node3D" parent="." unique_id=573123912]
 
 [node name="DebugRoot" type="Node3D" parent="." unique_id=1004067351]
+
+[node name="AnimationController" type="Node" parent="." unique_id=2026324121 node_paths=PackedStringArray("animation_player")]
+script = ExtResource("2_u84y5")
+animation_player = NodePath("../VisualRoot/PlayerVisual/CharacterModel/AnimationPlayer")
+
+[editable path="VisualRoot/PlayerVisual"]
+[editable path="VisualRoot/PlayerVisual/CharacterModel"]

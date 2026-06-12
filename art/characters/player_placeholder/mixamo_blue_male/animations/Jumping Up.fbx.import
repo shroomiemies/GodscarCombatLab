@@ -1,15 +1,15 @@
 [remap]
 
-importer="scene"
+importer="animation_library"
 importer_version=1
-type="PackedScene"
+type="AnimationLibrary"
 uid="uid://cq1tpvxkjh41g"
-path="res://.godot/imported/Jumping Up.fbx-97bc4eee4485198fa0439b8eed3628d5.scn"
+path="res://.godot/imported/Jumping Up.fbx-97bc4eee4485198fa0439b8eed3628d5.res"
 
 [deps]
 
 source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jumping Up.fbx"
-dest_files=["res://.godot/imported/Jumping Up.fbx-97bc4eee4485198fa0439b8eed3628d5.scn"]
+dest_files=["res://.godot/imported/Jumping Up.fbx-97bc4eee4485198fa0439b8eed3628d5.res"]
 
 [params]
 
@@ -29,7 +29,7 @@ meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
 animation/import=true
-animation/fps=30
+animation/fps=60.0
 animation/trimming=true
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false

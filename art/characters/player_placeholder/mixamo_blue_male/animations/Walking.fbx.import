@@ -1,15 +1,15 @@
 [remap]
 
-importer="scene"
+importer="animation_library"
 importer_version=1
-type="PackedScene"
+type="AnimationLibrary"
 uid="uid://blwruthiolsol"
-path="res://.godot/imported/Walking.fbx-b6da906901acdfdefa56081b763ad94a.scn"
+path="res://.godot/imported/Walking.fbx-b6da906901acdfdefa56081b763ad94a.res"
 
 [deps]
 
 source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Walking.fbx"
-dest_files=["res://.godot/imported/Walking.fbx-b6da906901acdfdefa56081b763ad94a.scn"]
+dest_files=["res://.godot/imported/Walking.fbx-b6da906901acdfdefa56081b763ad94a.res"]
 
 [params]
 
@@ -29,7 +29,7 @@ meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
 animation/import=true
-animation/fps=30
+animation/fps=60.0
 animation/trimming=true
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false

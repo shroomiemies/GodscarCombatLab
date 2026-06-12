@@ -1,15 +1,15 @@
 [remap]
 
-importer="scene"
+importer="animation_library"
 importer_version=1
-type="PackedScene"
+type="AnimationLibrary"
 uid="uid://bry1pmh13opo8"
-path="res://.godot/imported/Standing Up.fbx-4ac0b28ad307c8d3da6aaa05065f5db9.scn"
+path="res://.godot/imported/Standing Up.fbx-4ac0b28ad307c8d3da6aaa05065f5db9.res"
 
 [deps]
 
 source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Up.fbx"
-dest_files=["res://.godot/imported/Standing Up.fbx-4ac0b28ad307c8d3da6aaa05065f5db9.scn"]
+dest_files=["res://.godot/imported/Standing Up.fbx-4ac0b28ad307c8d3da6aaa05065f5db9.res"]
 
 [params]
 
@@ -29,7 +29,7 @@ meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
 animation/import=true
-animation/fps=30
+animation/fps=60.0
 animation/trimming=true
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false

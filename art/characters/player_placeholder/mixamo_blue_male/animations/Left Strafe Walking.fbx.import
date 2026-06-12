@@ -1,15 +1,15 @@
 [remap]
 
-importer="scene"
+importer="animation_library"
 importer_version=1
-type="PackedScene"
+type="AnimationLibrary"
 uid="uid://cr2u56gceupmw"
-path="res://.godot/imported/Left Strafe Walking.fbx-fffd05e60b45681d7d55ff91253df9ef.scn"
+path="res://.godot/imported/Left Strafe Walking.fbx-fffd05e60b45681d7d55ff91253df9ef.res"
 
 [deps]
 
 source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Left Strafe Walking.fbx"
-dest_files=["res://.godot/imported/Left Strafe Walking.fbx-fffd05e60b45681d7d55ff91253df9ef.scn"]
+dest_files=["res://.godot/imported/Left Strafe Walking.fbx-fffd05e60b45681d7d55ff91253df9ef.res"]
 
 [params]
 
@@ -29,7 +29,7 @@ meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
 animation/import=true
-animation/fps=30
+animation/fps=60.0
 animation/trimming=true
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false

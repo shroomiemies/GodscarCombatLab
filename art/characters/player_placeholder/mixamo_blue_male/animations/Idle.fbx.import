@@ -1,15 +1,15 @@
 [remap]
 
-importer="scene"
+importer="animation_library"
 importer_version=1
-type="PackedScene"
-uid="uid://dqenqq650xeaq"
-path="res://.godot/imported/Idle.fbx-3320b5d1229b1c76fa63ccff4c850f6f.scn"
+type="AnimationLibrary"
+uid="uid://xmuanrndnqaj"
+path="res://.godot/imported/Idle.fbx-3320b5d1229b1c76fa63ccff4c850f6f.res"
 
 [deps]
 
 source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Idle.fbx"
-dest_files=["res://.godot/imported/Idle.fbx-3320b5d1229b1c76fa63ccff4c850f6f.scn"]
+dest_files=["res://.godot/imported/Idle.fbx-3320b5d1229b1c76fa63ccff4c850f6f.res"]
 
 [params]
 
@@ -29,7 +29,7 @@ meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
 animation/import=true
-animation/fps=30
+animation/fps=60.0
 animation/trimming=true
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false

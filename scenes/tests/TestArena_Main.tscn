@@ -19,11 +19,11 @@ transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70
 [node name="ArenaFloor" type="StaticBody3D" parent="." unique_id=462676123]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ArenaFloor" unique_id=1158163165]
-transform = Transform3D(20, 0, 0, 0, 0.2, 0, 0, 0, 20, 0, -0.1, 0)
+transform = Transform3D(40, 0, 0, 0, 0.2, 0, 0, 0, 40, 0, -0.1, 0)
 shape = SubResource("BoxShape3D_vy3pw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ArenaFloor" unique_id=1797751006]
-transform = Transform3D(20, 0, 0, 0, 0.2, 0, 0, 0, 20, 0, -0.1, 0)
+transform = Transform3D(40, 0, 0, 0, 0.2, 0, 0, 0, 40, 0, -0.1, 0)
 mesh = SubResource("BoxMesh_u7ufk")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=263444565]

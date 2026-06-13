@@ -3,13 +3,13 @@
 importer="animation_library"
 importer_version=1
 type="AnimationLibrary"
-uid="uid://b62lsq7gq86bq"
-path="res://.godot/imported/Jog Backward Diagonal Left.fbx-157caec8087b79bb656810afa3bfebfb.res"
+uid="uid://6gyr4yxdahgw"
+path="res://.godot/imported/Jog FR.fbx-41620dd8fd0c12cd03e86c96711917b7.res"
 
 [deps]
 
-source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Backward Diagonal Left.fbx"
-dest_files=["res://.godot/imported/Jog Backward Diagonal Left.fbx-157caec8087b79bb656810afa3bfebfb.res"]
+source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog FR.fbx"
+dest_files=["res://.godot/imported/Jog FR.fbx-41620dd8fd0c12cd03e86c96711917b7.res"]
 
 [params]
 

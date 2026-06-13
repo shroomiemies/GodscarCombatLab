@@ -9,20 +9,45 @@ extends CharacterBody3D
 @export var camera_rig: CameraRig
 @export var look_turn_speed: float = 18.0
 
+@export var walk_blend_value: float = 0.3
+@export var jog_blend_value: float = 0.8
+@export var run_blend_value: float = 1.0
+
+@export var jump_velocity: float = 8.0
+@export var jump_start_duration: float = 0.18
+@export var land_duration: float = 0.18
+
 @onready var animation_controller: CharacterAnimationController = $AnimationController
 
 var current_local_movement_input: Vector2 = Vector2.ZERO
+var current_locomotion_blend_value: float = 0.0
 var current_speed_fraction: float = 0.0
 var movement_frame: MovementFrame
+var movement_state: MovementState = MovementState.GROUNDED
+var movement_state_time: float = 0.0
+var was_on_floor: bool = false
+
+enum MovementState {
+	GROUNDED,
+	JUMP_START,
+	AIRBORNE,
+	LANDING,
+}
 
 func _ready() -> void:
 	movement_frame = MovementFrame.world()
 	
 func _physics_process(delta: float) -> void:
+	was_on_floor = is_on_floor()
+
 	_update_movement_frame()
 	_update_look_facing(delta)
+	_update_movement_state(delta)
 	_apply_player_movement(delta)
+
 	move_and_slide()
+
+	_after_movement(delta)
 	_update_animation()
 	
 func _update_movement_frame() -> void:
@@ -41,6 +66,66 @@ func _update_look_facing(delta: float) -> void:
 
 	var target_yaw := atan2(-camera_forward.x, -camera_forward.z)
 	rotation.y = lerp_angle(rotation.y, target_yaw, 1.0 - exp(-look_turn_speed * delta))
+
+func _update_movement_state(delta: float) -> void:
+	movement_state_time += delta
+
+	match movement_state:
+		MovementState.GROUNDED:
+			if Input.is_action_just_pressed("jump") and is_on_floor():
+				_start_jump()
+
+			elif not is_on_floor():
+				_start_airborne()
+
+		MovementState.JUMP_START:
+			if movement_state_time >= jump_start_duration:
+				_start_airborne()
+
+		MovementState.AIRBORNE:
+			pass
+
+		MovementState.LANDING:
+			if movement_state_time >= land_duration:
+				_start_grounded()
+
+
+func _after_movement(_delta: float) -> void:
+	if movement_state == MovementState.AIRBORNE and is_on_floor():
+		_start_landing()
+	
+func _start_grounded() -> void:
+	movement_state = MovementState.GROUNDED
+	movement_state_time = 0.0
+
+	if animation_controller != null:
+		animation_controller.travel_grounded()
+
+
+func _start_jump() -> void:
+	movement_state = MovementState.JUMP_START
+	movement_state_time = 0.0
+
+	velocity.y = jump_velocity
+
+	if animation_controller != null:
+		animation_controller.travel_jump_start()
+
+
+func _start_airborne() -> void:
+	movement_state = MovementState.AIRBORNE
+	movement_state_time = 0.0
+
+	if animation_controller != null:
+		animation_controller.travel_fall()
+
+
+func _start_landing() -> void:
+	movement_state = MovementState.LANDING
+	movement_state_time = 0.0
+
+	if animation_controller != null:
+		animation_controller.travel_land()	
 	
 func _apply_player_movement(delta: float) -> void:
 	var input_vector := Input.get_vector(
@@ -62,13 +147,17 @@ func _apply_player_movement(delta: float) -> void:
 	current_local_movement_input = Vector2(input_vector.x, -input_vector.y)
 
 	var target_speed := jog_speed
+	current_locomotion_blend_value = jog_blend_value
 
 	if Input.is_action_pressed("walk"):
 		target_speed = walk_speed
+		current_locomotion_blend_value = walk_blend_value
 	elif Input.is_action_pressed("sprint"):
 		target_speed = run_speed
-	else:
-		target_speed = jog_speed
+		current_locomotion_blend_value = run_blend_value
+
+	if input_vector.length() <= 0.0:
+		current_locomotion_blend_value = 0.0
 
 	current_speed_fraction = 0.0
 
@@ -106,12 +195,9 @@ func _apply_player_movement(delta: float) -> void:
 	
 func _update_animation() -> void:
 	if animation_controller == null:
-		print("No animation_controller found.")
 		return
-
-	#print("Anim input: ", current_local_movement_input, " speed fraction: ", current_speed_fraction)
 
 	animation_controller.set_locomotion_input(
 		current_local_movement_input,
-		current_speed_fraction
+		current_locomotion_blend_value
 	)

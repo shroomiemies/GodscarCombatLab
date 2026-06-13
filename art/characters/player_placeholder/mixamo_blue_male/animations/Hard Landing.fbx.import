@@ -3,13 +3,13 @@
 importer="animation_library"
 importer_version=1
 type="AnimationLibrary"
-uid="uid://cqn7xik5fuvyc"
-path="res://.godot/imported/Jog Forward Diagonal.fbx-55c6f36e080f17b90cfc53ede3994a4d.res"
+uid="uid://ksuq4t02a53t"
+path="res://.godot/imported/Hard Landing.fbx-a4e7e3c9d2d84e142da8ed93b4bd7610.res"
 
 [deps]
 
-source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog Forward Diagonal.fbx"
-dest_files=["res://.godot/imported/Jog Forward Diagonal.fbx-55c6f36e080f17b90cfc53ede3994a4d.res"]
+source_file="res://art/characters/player_placeholder/mixamo_blue_male/animations/Hard Landing.fbx"
+dest_files=["res://.godot/imported/Hard Landing.fbx-a4e7e3c9d2d84e142da8ed93b4bd7610.res"]
 
 [params]
 

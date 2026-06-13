@@ -1,6 +1,12 @@
 [gd_scene format=3 uid="uid://cx82cvm7lrwf2"]
 
 [ext_resource type="PackedScene" uid="uid://dx82x0ae7tajb" path="res://art/characters/player_placeholder/mixamo_blue_male/model/Y Bot.fbx" id="1_bkol3"]
+[ext_resource type="AnimationLibrary" uid="uid://ksuq4t02a53t" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Hard Landing.fbx" id="2_ilxkl"]
+[ext_resource type="AnimationLibrary" uid="uid://udqipdab26s7" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog BL.fbx" id="2_swdov"]
+[ext_resource type="AnimationLibrary" uid="uid://c36pkr6vxcvxl" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog BR.fbx" id="3_i6rn8"]
+[ext_resource type="AnimationLibrary" uid="uid://fmbccbapvdmh" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog FL.fbx" id="4_ilxkl"]
+[ext_resource type="AnimationLibrary" uid="uid://6gyr4yxdahgw" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jog FR.fbx" id="5_i7cae"]
+[ext_resource type="AnimationLibrary" uid="uid://ukwgwuio31b7" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Jumping Down.fbx" id="7_i7cae"]
 
 [sub_resource type="Animation" id="Animation_igntb"]
 resource_name = "mixamo_com"
@@ -11386,11 +11392,8 @@ _data = {
 &"mixamo_com": SubResource("Animation_xx4us")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bkol3"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_b7dli"]
 animation = &"Falling Idle/mixamo_com"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_k22po"]
-animation = &"Falling To Landing/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_acwt6"]
 animation = &"Idle/mixamo_com"
@@ -11403,6 +11406,18 @@ animation = &"Jog Strafe Right/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i7cae"]
 animation = &"Jog Backward/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pg0o4"]
+animation = &"Jog BL/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2vlvk"]
+animation = &"Jog BR/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mblos"]
+animation = &"Jog FR/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ywguc"]
+animation = &"Jog FL/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_82sj6"]
 animation = &"Right Strafe/mixamo_com"
@@ -11448,40 +11463,50 @@ blend_point_7/pos = Vector2(-0.3, 0)
 blend_point_8/node = SubResource("AnimationNodeAnimation_swdov")
 blend_point_8/pos = Vector2(0.3, 0)
 blend_point_9/node = SubResource("AnimationNodeAnimation_i6rn8")
-blend_point_9/pos = Vector2(-0.7, 0)
+blend_point_9/pos = Vector2(-0.8, 0)
 blend_point_10/node = SubResource("AnimationNodeAnimation_ilxkl")
-blend_point_10/pos = Vector2(0.7, 0)
+blend_point_10/pos = Vector2(0.8, 0)
 blend_point_11/node = SubResource("AnimationNodeAnimation_i7cae")
-blend_point_11/pos = Vector2(0, -0.64)
+blend_point_11/pos = Vector2(0, -0.8)
+blend_point_12/node = SubResource("AnimationNodeAnimation_pg0o4")
+blend_point_12/pos = Vector2(-0.57, -0.57)
+blend_point_13/node = SubResource("AnimationNodeAnimation_2vlvk")
+blend_point_13/pos = Vector2(0.57, -0.57)
+blend_point_14/node = SubResource("AnimationNodeAnimation_mblos")
+blend_point_14/pos = Vector2(-0.57, 0.57)
+blend_point_15/node = SubResource("AnimationNodeAnimation_ywguc")
+blend_point_15/pos = Vector2(0.57, 0.57)
 snap = Vector2(0.01, 0.01)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_m0hxj"]
 animation = &"Jumping Up/mixamo_com"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hkxkl"]
+animation = &"Jumping Down/mixamo_com"
+
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mblos"]
 advance_mode = 2
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2vlvk"]
-switch_mode = 2
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_swdov"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ywguc"]
-switch_mode = 2
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hi1gi"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b7dli"]
-switch_mode = 2
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_oivhg"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ne65v"]
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hi1gi"]
 states/End/position = Vector2(1262, 100)
-"states/Falling Idle_mixamo_com/node" = SubResource("AnimationNodeAnimation_bkol3")
-"states/Falling Idle_mixamo_com/position" = Vector2(611, 192)
-"states/Falling To Landing_mixamo_com/node" = SubResource("AnimationNodeAnimation_k22po")
-"states/Falling To Landing_mixamo_com/position" = Vector2(773, 34)
+states/Fall/node = SubResource("AnimationNodeAnimation_b7dli")
+states/Fall/position = Vector2(717, 137)
 states/Grounded/node = SubResource("AnimationNodeBlendSpace2D_m0hxj")
-states/Grounded/position = Vector2(371, 100)
-"states/Jumping Up_mixamo_com/node" = SubResource("AnimationNodeAnimation_m0hxj")
-"states/Jumping Up_mixamo_com/position" = Vector2(478, 34)
+states/Grounded/position = Vector2(418, 137)
+states/JumpStart/node = SubResource("AnimationNodeAnimation_m0hxj")
+states/JumpStart/position = Vector2(478, 34)
+states/Land/node = SubResource("AnimationNodeAnimation_hkxkl")
+states/Land/position = Vector2(717, 34)
 states/Start/position = Vector2(55, 100)
-transitions = ["Start", "Grounded", SubResource("AnimationNodeStateMachineTransition_mblos"), "Jumping Up_mixamo_com", "Falling Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_2vlvk"), "Falling Idle_mixamo_com", "Falling To Landing_mixamo_com", SubResource("AnimationNodeStateMachineTransition_ywguc"), "Falling To Landing_mixamo_com", "Grounded", SubResource("AnimationNodeStateMachineTransition_b7dli")]
+transitions = ["Start", "Grounded", SubResource("AnimationNodeStateMachineTransition_mblos"), "Grounded", "JumpStart", SubResource("AnimationNodeStateMachineTransition_swdov"), "Land", "Grounded", SubResource("AnimationNodeStateMachineTransition_hi1gi"), "JumpStart", "Fall", SubResource("AnimationNodeStateMachineTransition_oivhg"), "Fall", "Land", SubResource("AnimationNodeStateMachineTransition_ne65v")]
 
 [node name="PlayerVisual" type="Node3D" unique_id=1971921515]
 
@@ -11532,14 +11557,20 @@ bones/53/rotation = Quaternion(-1.4500284e-11, 4.8883608e-17, -1.0428465e-05, 1)
 [node name="AnimationPlayer" parent="CharacterModel" index="1" unique_id=598606316]
 "libraries/Falling Idle" = SubResource("AnimationLibrary_bkol3")
 "libraries/Falling To Landing" = SubResource("AnimationLibrary_k22po")
+"libraries/Hard Landing" = ExtResource("2_ilxkl")
 "libraries/Head Hit" = SubResource("AnimationLibrary_acwt6")
 "libraries/Hit To Body" = SubResource("AnimationLibrary_p7y0k")
 "libraries/Hit To Gut" = SubResource("AnimationLibrary_swdov")
 libraries/Idle = SubResource("AnimationLibrary_i6rn8")
+"libraries/Jog BL" = ExtResource("2_swdov")
+"libraries/Jog BR" = ExtResource("3_i6rn8")
 "libraries/Jog Backward" = SubResource("AnimationLibrary_ilxkl")
+"libraries/Jog FL" = ExtResource("4_ilxkl")
+"libraries/Jog FR" = ExtResource("5_i7cae")
 "libraries/Jog Forward" = SubResource("AnimationLibrary_i7cae")
 "libraries/Jog Strafe Left" = SubResource("AnimationLibrary_82sj6")
 "libraries/Jog Strafe Right" = SubResource("AnimationLibrary_hvyug")
+"libraries/Jumping Down" = ExtResource("7_i7cae")
 "libraries/Jumping Up" = SubResource("AnimationLibrary_0neir")
 "libraries/Kidney Hit" = SubResource("AnimationLibrary_djrmj")
 "libraries/Knocked Down" = SubResource("AnimationLibrary_nqsmy")

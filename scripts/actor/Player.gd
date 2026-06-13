@@ -14,8 +14,13 @@ extends CharacterBody3D
 @export var run_blend_value: float = 1.0
 
 @export var jump_velocity: float = 8.0
-@export var jump_start_duration: float = 0.18
-@export var land_duration: float = 0.18
+@export var jump_start_duration: float = 0.3
+@export var light_land_duration: float = 0.12
+@export var heavy_land_duration: float = 0.35
+@export var impact_land_duration: float = 0.65
+@export var heavy_land_velocity: float = 12.0
+@export var impact_land_velocity: float = 20.0
+@export var landing_movement_multiplier: float = 0.35
 
 @onready var animation_controller: CharacterAnimationController = $AnimationController
 
@@ -26,12 +31,21 @@ var movement_frame: MovementFrame
 var movement_state: MovementState = MovementState.GROUNDED
 var movement_state_time: float = 0.0
 var was_on_floor: bool = false
+var last_fall_speed: float = 0.0
+var current_landing_type: LandingType = LandingType.LIGHT
+var current_land_duration: float = 0.12
 
 enum MovementState {
 	GROUNDED,
 	JUMP_START,
 	AIRBORNE,
 	LANDING,
+}
+
+enum LandingType {
+	LIGHT,
+	HEAVY,
+	IMPACT,
 }
 
 func _ready() -> void:
@@ -44,6 +58,7 @@ func _physics_process(delta: float) -> void:
 	_update_look_facing(delta)
 	_update_movement_state(delta)
 	_apply_player_movement(delta)
+	_update_fall_speed()
 
 	move_and_slide()
 
@@ -86,9 +101,12 @@ func _update_movement_state(delta: float) -> void:
 			pass
 
 		MovementState.LANDING:
-			if movement_state_time >= land_duration:
+			if movement_state_time >= current_land_duration:
 				_start_grounded()
 
+func _update_fall_speed() -> void:
+	if velocity.y < 0.0:
+		last_fall_speed = abs(velocity.y)
 
 func _after_movement(_delta: float) -> void:
 	if movement_state == MovementState.AIRBORNE and is_on_floor():
@@ -101,7 +119,6 @@ func _start_grounded() -> void:
 	if animation_controller != null:
 		animation_controller.travel_grounded()
 
-
 func _start_jump() -> void:
 	movement_state = MovementState.JUMP_START
 	movement_state_time = 0.0
@@ -111,7 +128,6 @@ func _start_jump() -> void:
 	if animation_controller != null:
 		animation_controller.travel_jump_start()
 
-
 func _start_airborne() -> void:
 	movement_state = MovementState.AIRBORNE
 	movement_state_time = 0.0
@@ -119,13 +135,44 @@ func _start_airborne() -> void:
 	if animation_controller != null:
 		animation_controller.travel_fall()
 
-
 func _start_landing() -> void:
 	movement_state = MovementState.LANDING
 	movement_state_time = 0.0
 
+	current_landing_type = _get_landing_type()
+
+	match current_landing_type:
+		LandingType.LIGHT:
+			print("Light landing. Fall speed: ", last_fall_speed)
+		LandingType.HEAVY:
+			print("Heavy landing. Fall speed: ", last_fall_speed)
+		LandingType.IMPACT:
+			print("Impact landing. Fall speed: ", last_fall_speed)
+			
+	match current_landing_type:
+		LandingType.LIGHT:
+			current_land_duration = light_land_duration
+			print("Light landing. Fall speed: ", last_fall_speed)
+		LandingType.HEAVY:
+			current_land_duration = heavy_land_duration
+			print("Heavy landing. Fall speed: ", last_fall_speed)
+		LandingType.IMPACT:
+			current_land_duration = impact_land_duration
+			print("Impact landing. Fall speed: ", last_fall_speed)
+
+	last_fall_speed = 0.0
+
 	if animation_controller != null:
-		animation_controller.travel_land()	
+		animation_controller.travel_land()
+	
+func _get_landing_type() -> LandingType:
+	if last_fall_speed >= impact_land_velocity:
+		return LandingType.IMPACT
+
+	if last_fall_speed >= heavy_land_velocity:
+		return LandingType.HEAVY
+
+	return LandingType.LIGHT
 	
 func _apply_player_movement(delta: float) -> void:
 	var input_vector := Input.get_vector(
@@ -155,6 +202,9 @@ func _apply_player_movement(delta: float) -> void:
 	elif Input.is_action_pressed("sprint"):
 		target_speed = run_speed
 		current_locomotion_blend_value = run_blend_value
+		
+	if movement_state == MovementState.LANDING:
+		target_speed *= landing_movement_multiplier
 
 	if input_vector.length() <= 0.0:
 		current_locomotion_blend_value = 0.0

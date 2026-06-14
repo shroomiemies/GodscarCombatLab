@@ -1,9 +1,30 @@
 [gd_scene format=3 uid="uid://qn1gmau2m6bp"]
 
-[node name="TrainingDummy" type="CharacterBody3D" unique_id=152615839]
+[ext_resource type="Script" uid="uid://blv6exxri5ifk" path="res://scripts/actor/enemies/TrainingDummy.gd" id="1_6rn6d"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8d4dd"]
+radius = 0.35
+height = 1.6
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6j5ib"]
+top_radius = 0.35
+bottom_radius = 0.35
+height = 1.6
+
+[node name="TrainingDummy" type="CharacterBody3D" unique_id=152615839 groups=["targetable"]]
+script = ExtResource("1_6rn6d")
+
+[node name="BodyCollision" type="CollisionShape3D" parent="." unique_id=950019733]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("CapsuleShape3D_8d4dd")
 
 [node name="VisualRoot" type="Node3D" parent="." unique_id=480776935]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=950019733]
+[node name="DummyMesh" type="MeshInstance3D" parent="." unique_id=2053388093]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+mesh = SubResource("CylinderMesh_6j5ib")
+
+[node name="TargetPoint" type="Node3D" parent="." unique_id=1209444924]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="DebugRoot" type="Node3D" parent="." unique_id=332152268]

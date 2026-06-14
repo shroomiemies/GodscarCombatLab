@@ -3,7 +3,7 @@ extends CharacterBody3D
 
 @export var target_display_name: String = "Training Dummy"
 
-@onready var target_point: Marker3D = $TargetPoint
+@onready var target_point: Node3D = $TargetPoint
 
 func get_target_point() -> Vector3:
 	if target_point == null:

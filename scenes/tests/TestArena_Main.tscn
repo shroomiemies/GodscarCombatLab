@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://66rxq32kmv15"]
 
 [ext_resource type="PackedScene" uid="uid://cet42dhxvxoit" path="res://scenes/actors/player/Player.tscn" id="1_4n1cq"]
+[ext_resource type="PackedScene" uid="uid://qn1gmau2m6bp" path="res://scenes/actors/enemies/TrainingDummy.tscn" id="1_xdqrp"]
 [ext_resource type="Script" uid="uid://dawleowx5jiei" path="res://scripts/actor/Player.gd" id="2_vy3pw"]
 [ext_resource type="PackedScene" uid="uid://yxt4hw7ybxe" path="res://scenes/camera/CameraRig.tscn" id="3_4difj"]
 [ext_resource type="Script" uid="uid://bp4b1fp6fn6k1" path="res://scripts/camera/CameraRig.gd" id="4_xdqrp"]
@@ -10,6 +11,9 @@
 [sub_resource type="BoxMesh" id="BoxMesh_u7ufk"]
 
 [node name="TestArena_Main" type="Node3D" unique_id=1071042527]
+
+[node name="TrainingDummy" parent="." unique_id=152615839 instance=ExtResource("1_xdqrp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2055996319]
 

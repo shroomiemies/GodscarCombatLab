@@ -31,6 +31,7 @@ extends CharacterBody3D
 @export var landing_movement_multiplier: float = 0.35
 
 @onready var animation_controller: CharacterAnimationController = $AnimationController
+@onready var targeting_controller: TargetingController = $TargetingController
 
 var current_local_movement_input: Vector2 = Vector2.ZERO
 var current_locomotion_blend_value: float = 0.0
@@ -60,6 +61,10 @@ enum LandingType {
 
 func _ready() -> void:
 	movement_frame = MovementFrame.world()
+	
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("lock_on"):
+		_toggle_lock_on()
 	
 func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
@@ -95,15 +100,25 @@ func _update_movement_frame() -> void:
 	movement_frame = MovementFrame.world()
 	
 func _update_look_facing(delta: float) -> void:
-	if camera_rig == null:
+	var desired_forward := Vector3.ZERO
+
+	if targeting_controller != null and targeting_controller.has_target():
+		var target_point := targeting_controller.get_target_point()
+		desired_forward = target_point - global_position
+	else:
+		if camera_rig == null:
+			return
+
+		desired_forward = -camera_rig.get_flat_camera_basis().z
+
+	desired_forward.y = 0.0
+
+	if desired_forward.length_squared() < 0.0001:
 		return
 
-	var camera_forward := -camera_rig.get_flat_camera_basis().z
+	desired_forward = desired_forward.normalized()
 
-	if camera_forward.length_squared() < 0.0001:
-		return
-
-	var target_yaw := atan2(-camera_forward.x, -camera_forward.z)
+	var target_yaw := atan2(-desired_forward.x, -desired_forward.z)
 	rotation.y = lerp_angle(rotation.y, target_yaw, 1.0 - exp(-look_turn_speed * delta))
 
 func _update_movement_state(delta: float) -> void:
@@ -259,10 +274,7 @@ func _apply_player_movement(delta: float) -> void:
 	movement_basis.x = right
 	movement_basis.y = movement_frame.up
 	movement_basis.z = -forward
-	
-	if camera_rig != null:
-		movement_basis = camera_rig.get_flat_camera_basis()
-	
+
 	var world_move := movement_basis * local_move
 	var desired_horizontal_velocity := world_move * target_speed
 	
@@ -283,3 +295,22 @@ func _update_animation() -> void:
 		current_local_movement_input,
 		current_locomotion_blend_value
 	)
+	
+func _toggle_lock_on() -> void:
+	if targeting_controller == null:
+		return
+
+	var look_forward := -global_transform.basis.z
+
+	if camera_rig != null:
+		look_forward = -camera_rig.get_flat_camera_basis().z
+
+	targeting_controller.toggle_lock_on(global_position, look_forward)
+
+	if camera_rig == null:
+		return
+
+	if targeting_controller.has_target():
+		camera_rig.set_lock_on_target(targeting_controller.current_target)
+	else:
+		camera_rig.clear_lock_on_target()

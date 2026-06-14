@@ -13,13 +13,21 @@ extends CharacterBody3D
 @export var jog_blend_value: float = 0.8
 @export var run_blend_value: float = 1.0
 
+@export_group("Jump Tuning")
 @export var jump_velocity: float = 8.0
-@export var jump_start_duration: float = 0.3
+@export var jump_start_duration: float = 0.18
+@export var jump_buffer_time: float = 0.14
+@export var coyote_time: float = 0.12
+
+@export_group("Air Control")
+@export var air_control_multiplier: float = 0.65
+
+@export_group("Landing")
+@export var heavy_land_velocity: float = 12.0
+@export var impact_land_velocity: float = 20.0
 @export var light_land_duration: float = 0.12
 @export var heavy_land_duration: float = 0.35
 @export var impact_land_duration: float = 0.65
-@export var heavy_land_velocity: float = 12.0
-@export var impact_land_velocity: float = 20.0
 @export var landing_movement_multiplier: float = 0.35
 
 @onready var animation_controller: CharacterAnimationController = $AnimationController
@@ -34,6 +42,8 @@ var was_on_floor: bool = false
 var last_fall_speed: float = 0.0
 var current_landing_type: LandingType = LandingType.LIGHT
 var current_land_duration: float = 0.12
+var jump_buffer_timer: float = 0.0
+var coyote_timer: float = 0.0
 
 enum MovementState {
 	GROUNDED,
@@ -53,7 +63,8 @@ func _ready() -> void:
 	
 func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
-
+	
+	_update_timers(delta)
 	_update_movement_frame()
 	_update_look_facing(delta)
 	_update_movement_state(delta)
@@ -64,6 +75,19 @@ func _physics_process(delta: float) -> void:
 
 	_after_movement(delta)
 	_update_animation()
+	
+func _update_timers(delta: float) -> void:
+	if jump_buffer_timer > 0.0:
+		jump_buffer_timer -= delta
+
+	if coyote_timer > 0.0:
+		coyote_timer -= delta
+
+	if Input.is_action_just_pressed("jump"):
+		jump_buffer_timer = jump_buffer_time
+
+	if is_on_floor() and movement_state != MovementState.JUMP_START:
+		coyote_timer = coyote_time
 	
 func _update_movement_frame() -> void:
 	# For now, the player uses normal world space.
@@ -87,9 +111,8 @@ func _update_movement_state(delta: float) -> void:
 
 	match movement_state:
 		MovementState.GROUNDED:
-			if Input.is_action_just_pressed("jump") and is_on_floor():
+			if _can_start_jump():
 				_start_jump()
-
 			elif not is_on_floor():
 				_start_airborne()
 
@@ -98,15 +121,27 @@ func _update_movement_state(delta: float) -> void:
 				_start_airborne()
 
 		MovementState.AIRBORNE:
-			pass
+			if _can_start_jump():
+				_start_jump()
 
 		MovementState.LANDING:
-			if movement_state_time >= current_land_duration:
+			if _can_start_jump():
+				_start_jump()
+			elif movement_state_time >= current_land_duration:
 				_start_grounded()
+
+func _can_start_jump() -> bool:
+	if jump_buffer_timer <= 0.0:
+		return false
+
+	if coyote_timer <= 0.0 and not is_on_floor():
+		return false
+
+	return true
 
 func _update_fall_speed() -> void:
 	if velocity.y < 0.0:
-		last_fall_speed = abs(velocity.y)
+		last_fall_speed = max(last_fall_speed, abs(velocity.y))
 
 func _after_movement(_delta: float) -> void:
 	if movement_state == MovementState.AIRBORNE and is_on_floor():
@@ -122,6 +157,9 @@ func _start_grounded() -> void:
 func _start_jump() -> void:
 	movement_state = MovementState.JUMP_START
 	movement_state_time = 0.0
+
+	jump_buffer_timer = 0.0
+	coyote_timer = 0.0
 
 	velocity.y = jump_velocity
 
@@ -143,19 +181,13 @@ func _start_landing() -> void:
 
 	match current_landing_type:
 		LandingType.LIGHT:
-			print("Light landing. Fall speed: ", last_fall_speed)
-		LandingType.HEAVY:
-			print("Heavy landing. Fall speed: ", last_fall_speed)
-		LandingType.IMPACT:
-			print("Impact landing. Fall speed: ", last_fall_speed)
-			
-	match current_landing_type:
-		LandingType.LIGHT:
 			current_land_duration = light_land_duration
 			print("Light landing. Fall speed: ", last_fall_speed)
+
 		LandingType.HEAVY:
 			current_land_duration = heavy_land_duration
 			print("Heavy landing. Fall speed: ", last_fall_speed)
+
 		LandingType.IMPACT:
 			current_land_duration = impact_land_duration
 			print("Impact landing. Fall speed: ", last_fall_speed)

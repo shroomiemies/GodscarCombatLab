@@ -32,6 +32,7 @@ extends CharacterBody3D
 
 @onready var animation_controller: CharacterAnimationController = $AnimationController
 @onready var targeting_controller: TargetingController = $TargetingController
+@onready var combat_controller: CombatController = $CombatController
 
 var current_local_movement_input: Vector2 = Vector2.ZERO
 var current_locomotion_blend_value: float = 0.0
@@ -65,6 +66,9 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("lock_on"):
 		_toggle_lock_on()
+		
+	if event.is_action_pressed("attack_main"):
+		_try_main_attack()
 	
 func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
@@ -100,6 +104,9 @@ func _update_movement_frame() -> void:
 	movement_frame = MovementFrame.world()
 	
 func _update_look_facing(delta: float) -> void:
+	if combat_controller != null and not combat_controller.allows_rotation():
+		return
+	
 	var desired_forward := Vector3.ZERO
 
 	if targeting_controller != null and targeting_controller.has_target():
@@ -253,8 +260,19 @@ func _apply_player_movement(delta: float) -> void:
 	if movement_state == MovementState.LANDING:
 		target_speed *= landing_movement_multiplier
 
-	if input_vector.length() <= 0.0:
-		current_locomotion_blend_value = 0.0
+	var movement_multiplier := 1.0
+
+	if not is_on_floor():
+		movement_multiplier *= air_control_multiplier
+
+	if movement_state == MovementState.LANDING:
+		movement_multiplier *= landing_movement_multiplier
+		
+	if combat_controller != null and combat_controller.is_attacking():
+		var lock_strength := combat_controller.get_current_movement_lock_strength()
+		movement_multiplier *= 1.0 - clamp(lock_strength, 0.0, 1.0)
+
+	target_speed *= movement_multiplier
 
 	current_speed_fraction = 0.0
 
@@ -314,3 +332,9 @@ func _toggle_lock_on() -> void:
 		camera_rig.set_lock_on_target(targeting_controller.current_target)
 	else:
 		camera_rig.clear_lock_on_target()
+		
+func _try_main_attack() -> void:
+	if combat_controller == null:
+		return
+
+	combat_controller.try_start_default_attack()

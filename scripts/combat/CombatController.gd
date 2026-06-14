@@ -1,0 +1,136 @@
+class_name CombatController
+extends Node
+
+enum CombatState {
+	IDLE,
+	STARTUP,
+	ACTIVE,
+	RECOVERY,
+}
+
+signal attack_started(attack_data: AttackData)
+signal attack_phase_changed(new_state: CombatState)
+signal attack_finished()
+
+@export var default_attack: AttackData
+
+var combat_state: CombatState = CombatState.IDLE
+var current_attack: AttackData
+var attack_time: float = 0.0
+
+
+func _physics_process(delta: float) -> void:
+	if combat_state == CombatState.IDLE:
+		return
+
+	attack_time += delta
+	_update_attack_phase()
+
+
+func can_start_attack() -> bool:
+	return combat_state == CombatState.IDLE
+
+
+func try_start_default_attack() -> bool:
+	if default_attack == null:
+		push_warning("CombatController has no default_attack assigned.")
+		return false
+
+	return try_start_attack(default_attack)
+
+
+func try_start_attack(attack_data: AttackData) -> bool:
+	if attack_data == null:
+		return false
+
+	if not can_start_attack():
+		return false
+
+	current_attack = attack_data
+	attack_time = 0.0
+	combat_state = CombatState.STARTUP
+
+	print("Attack started: ", current_attack.attack_id)
+	attack_started.emit(current_attack)
+	attack_phase_changed.emit(combat_state)
+
+	return true
+
+
+func _update_attack_phase() -> void:
+	if current_attack == null:
+		_finish_attack()
+		return
+
+	var startup_end := current_attack.startup_duration
+	var active_end := startup_end + current_attack.active_duration
+	var recovery_end := active_end + current_attack.recovery_duration
+
+	if attack_time >= recovery_end:
+		_finish_attack()
+		return
+
+	if attack_time >= active_end:
+		_set_combat_state(CombatState.RECOVERY)
+	elif attack_time >= startup_end:
+		_set_combat_state(CombatState.ACTIVE)
+	else:
+		_set_combat_state(CombatState.STARTUP)
+
+
+func _set_combat_state(new_state: CombatState) -> void:
+	if combat_state == new_state:
+		return
+
+	combat_state = new_state
+
+	match combat_state:
+		CombatState.STARTUP:
+			print("Attack phase: STARTUP")
+		CombatState.ACTIVE:
+			print("Attack phase: ACTIVE")
+		CombatState.RECOVERY:
+			print("Attack phase: RECOVERY")
+		CombatState.IDLE:
+			print("Attack phase: IDLE")
+
+	attack_phase_changed.emit(combat_state)
+
+
+func _finish_attack() -> void:
+	print("Attack finished.")
+
+	combat_state = CombatState.IDLE
+	current_attack = null
+	attack_time = 0.0
+
+	attack_finished.emit()
+
+
+func is_attacking() -> bool:
+	return combat_state != CombatState.IDLE
+
+
+func get_current_movement_lock_strength() -> float:
+	if current_attack == null:
+		return 0.0
+
+	if combat_state == CombatState.IDLE:
+		return 0.0
+
+	return current_attack.movement_lock_strength
+
+
+func allows_rotation() -> bool:
+	if current_attack == null:
+		return true
+
+	match combat_state:
+		CombatState.STARTUP:
+			return current_attack.allow_rotation_during_startup
+		CombatState.ACTIVE:
+			return current_attack.allow_rotation_during_active
+		CombatState.RECOVERY:
+			return current_attack.allow_rotation_during_recovery
+		_:
+			return true

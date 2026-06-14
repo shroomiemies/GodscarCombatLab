@@ -17,19 +17,20 @@ signal attack_finished()
 var combat_state: CombatState = CombatState.IDLE
 var current_attack: AttackData
 var attack_time: float = 0.0
-
+var attack_motion_velocity: Vector3 = Vector3.ZERO
 
 func _physics_process(delta: float) -> void:
+	attack_motion_velocity = Vector3.ZERO
+	
 	if combat_state == CombatState.IDLE:
 		return
 
 	attack_time += delta
 	_update_attack_phase()
-
+	_update_attack_motion_velocity(delta)
 
 func can_start_attack() -> bool:
 	return combat_state == CombatState.IDLE
-
 
 func try_start_default_attack() -> bool:
 	if default_attack == null:
@@ -37,7 +38,6 @@ func try_start_default_attack() -> bool:
 		return false
 
 	return try_start_attack(default_attack)
-
 
 func try_start_attack(attack_data: AttackData) -> bool:
 	if attack_data == null:
@@ -55,7 +55,6 @@ func try_start_attack(attack_data: AttackData) -> bool:
 	attack_phase_changed.emit(combat_state)
 
 	return true
-
 
 func _update_attack_phase() -> void:
 	if current_attack == null:
@@ -77,7 +76,6 @@ func _update_attack_phase() -> void:
 	else:
 		_set_combat_state(CombatState.STARTUP)
 
-
 func _set_combat_state(new_state: CombatState) -> void:
 	if combat_state == new_state:
 		return
@@ -96,7 +94,6 @@ func _set_combat_state(new_state: CombatState) -> void:
 
 	attack_phase_changed.emit(combat_state)
 
-
 func _finish_attack() -> void:
 	print("Attack finished.")
 
@@ -106,10 +103,8 @@ func _finish_attack() -> void:
 
 	attack_finished.emit()
 
-
 func is_attacking() -> bool:
 	return combat_state != CombatState.IDLE
-
 
 func get_current_movement_lock_strength() -> float:
 	if current_attack == null:
@@ -119,7 +114,6 @@ func get_current_movement_lock_strength() -> float:
 		return 0.0
 
 	return current_attack.movement_lock_strength
-
 
 func allows_rotation() -> bool:
 	if current_attack == null:
@@ -134,3 +128,33 @@ func allows_rotation() -> bool:
 			return current_attack.allow_rotation_during_recovery
 		_:
 			return true
+
+func _update_attack_motion_velocity(delta: float) -> void:
+	if current_attack == null:
+		attack_motion_velocity = Vector3.ZERO
+		return
+
+	if delta <= 0.0:
+		attack_motion_velocity = Vector3.ZERO
+		return
+
+	var start_time := current_attack.displacement_start_time
+	var end_time := current_attack.displacement_end_time
+
+	if end_time <= start_time:
+		attack_motion_velocity = Vector3.ZERO
+		return
+
+	if attack_time < start_time or attack_time > end_time:
+		attack_motion_velocity = Vector3.ZERO
+		return
+
+	var displacement_duration := end_time - start_time
+	attack_motion_velocity = current_attack.local_displacement / displacement_duration
+	
+	
+	if attack_motion_velocity.length() > current_attack.max_displacement_speed:
+		attack_motion_velocity = attack_motion_velocity.normalized() * current_attack.max_displacement_speed
+	
+func get_attack_motion_velocity() -> Vector3:
+	return attack_motion_velocity

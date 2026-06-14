@@ -1,10 +1,6 @@
 class_name Player
 extends CharacterBody3D
 
-@export var walk_speed: float = 2.0
-@export var jog_speed: float = 5.0
-@export var run_speed: float = 6.0
-@export var acceleration: float = 18.0
 @export var gravity: float = 24.0
 @export var camera_rig: CameraRig
 @export var look_turn_speed: float = 18.0
@@ -19,8 +15,15 @@ extends CharacterBody3D
 @export var jump_buffer_time: float = 0.14
 @export var coyote_time: float = 0.12
 
-@export_group("Air Control")
-@export var air_control_multiplier: float = 0.65
+@export_group("Movement")
+@export var walk_speed: float = 2.0
+@export var jog_speed: float = 5.0
+@export var run_speed: float = 6.0
+@export var ground_acceleration: float = 18.0
+@export var air_acceleration: float = 5.0
+@export var landing_acceleration: float = 8.0
+@export var ground_deceleration: float = 22.0
+@export var air_deceleration: float = 0.0
 
 @export_group("Landing")
 @export var heavy_land_velocity: float = 12.0
@@ -39,6 +42,7 @@ var current_locomotion_blend_value: float = 0.0
 var current_speed_fraction: float = 0.0
 var movement_frame: MovementFrame
 var movement_state: MovementState = MovementState.GROUNDED
+var locomotion_velocity: Vector3 = Vector3.ZERO
 var movement_state_time: float = 0.0
 var was_on_floor: bool = false
 var last_fall_speed: float = 0.0
@@ -169,6 +173,8 @@ func _after_movement(_delta: float) -> void:
 	if movement_state == MovementState.AIRBORNE and is_on_floor():
 		_start_landing()
 	
+	_sync_locomotion_velocity_after_slide()
+	
 func _start_grounded() -> void:
 	movement_state = MovementState.GROUNDED
 	movement_state_time = 0.0
@@ -235,16 +241,15 @@ func _apply_player_movement(delta: float) -> void:
 		"move_forward",
 		"move_back"
 	)
-	
-	# Input.get_vector gives W/forward as negative Y.
-	# Animation space uses forward as positive Y.
-	current_local_movement_input = Vector2(input_vector.x, -input_vector.y)
-	
-	var local_move := Vector3(input_vector.x,0,input_vector.y)
-	
+
+	var local_move := Vector3(input_vector.x, 0.0, input_vector.y)
+
 	if local_move.length() > 1.0:
 		local_move = local_move.normalized()
-		
+
+	# Animation convention:
+	# Input.get_vector gives forward as negative Y.
+	# Animation blend uses forward as positive Y.
 	current_local_movement_input = Vector2(input_vector.x, -input_vector.y)
 
 	var target_speed := jog_speed
@@ -256,29 +261,10 @@ func _apply_player_movement(delta: float) -> void:
 	elif Input.is_action_pressed("sprint"):
 		target_speed = run_speed
 		current_locomotion_blend_value = run_blend_value
-		
-	if movement_state == MovementState.LANDING:
-		target_speed *= landing_movement_multiplier
 
-	var movement_multiplier := 1.0
+	if input_vector.length() <= 0.0:
+		current_locomotion_blend_value = 0.0
 
-	if not is_on_floor():
-		movement_multiplier *= air_control_multiplier
-
-	if movement_state == MovementState.LANDING:
-		movement_multiplier *= landing_movement_multiplier
-		
-	if combat_controller != null and combat_controller.is_attacking():
-		var lock_strength := combat_controller.get_current_movement_lock_strength()
-		movement_multiplier *= 1.0 - clamp(lock_strength, 0.0, 1.0)
-
-	target_speed *= movement_multiplier
-
-	current_speed_fraction = 0.0
-
-	if input_vector.length() > 0.0:
-		current_speed_fraction = clamp(target_speed / run_speed, 0.0, 1.0)
-	
 	var forward := -global_transform.basis.z
 	var right := global_transform.basis.x
 
@@ -294,16 +280,11 @@ func _apply_player_movement(delta: float) -> void:
 	movement_basis.z = -forward
 
 	var world_move := movement_basis * local_move
-	var desired_horizontal_velocity := world_move * target_speed
-	
-	velocity.x = move_toward(velocity.x, desired_horizontal_velocity.x, acceleration * delta)
-	velocity.z = move_toward(velocity.z, desired_horizontal_velocity.z, acceleration * delta)
-	
-	if not is_on_floor():
-		velocity.y -= gravity * delta
-	else:
-		if velocity.y < 0.0:
-			velocity.y = 0.0
+	var desired_input_velocity := world_move * target_speed
+
+	_apply_horizontal_locomotion_velocity(desired_input_velocity, input_vector.length(), delta)
+	_apply_attack_motion_velocity(movement_basis, delta)
+	_apply_gravity(delta)
 	
 func _update_animation() -> void:
 	if animation_controller == null:
@@ -338,3 +319,71 @@ func _try_main_attack() -> void:
 		return
 
 	combat_controller.try_start_default_attack()
+
+func _get_horizontal_velocity() -> Vector3:
+	return Vector3(velocity.x, 0.0, velocity.z)
+
+func _set_horizontal_velocity(horizontal_velocity: Vector3) -> void:
+	velocity.x = horizontal_velocity.x
+	velocity.z = horizontal_velocity.z
+	
+func _apply_horizontal_locomotion_velocity(
+	desired_input_velocity: Vector3,
+	input_strength: float,
+	delta: float
+) -> void:
+	var accel := ground_acceleration
+	var decel := ground_deceleration
+
+	if not is_on_floor():
+		accel = air_acceleration
+		decel = air_deceleration
+
+	if movement_state == MovementState.LANDING:
+		accel = landing_acceleration
+		decel = landing_acceleration
+
+	var rate := accel
+
+	if input_strength <= 0.0:
+		rate = decel
+
+	if rate > 0.0:
+		locomotion_velocity = locomotion_velocity.move_toward(
+			desired_input_velocity,
+			rate * delta
+		)
+
+	velocity.x = locomotion_velocity.x
+	velocity.z = locomotion_velocity.z
+	
+func _apply_attack_motion_velocity(movement_basis: Basis, _delta: float) -> void:
+	if combat_controller == null:
+		return
+
+	if not combat_controller.is_attacking():
+		return
+
+	var local_attack_velocity := combat_controller.get_attack_motion_velocity()
+
+	if local_attack_velocity.length_squared() <= 0.0001:
+		return
+
+	var attack_world_velocity := movement_basis * local_attack_velocity
+
+	velocity.x = locomotion_velocity.x + attack_world_velocity.x
+	velocity.z = locomotion_velocity.z + attack_world_velocity.z
+	
+func _apply_gravity(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+	else:
+		if velocity.y < 0.0:
+			velocity.y = 0.0
+			
+func _sync_locomotion_velocity_after_slide() -> void:
+	if combat_controller != null and combat_controller.is_attacking():
+		return
+
+	locomotion_velocity.x = velocity.x
+	locomotion_velocity.z = velocity.z

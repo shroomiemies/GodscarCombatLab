@@ -221,7 +221,12 @@ func _register_hurtbox_hit(hurtbox: Hurtbox) -> void:
 	hit_result.source = source_actor
 	hit_result.hit_position = hurtbox.global_position
 
-	print("Hit: ", hit_actor.name, " with ", current_attack_data.attack_id if current_attack_data != null else "unknown_attack")
+	var attack_id: StringName = &"unknown_attack"
+
+	if current_attack_data != null:
+		attack_id = current_attack_data.attack_id
+
+	print("Hit: ", hit_actor.name, " with ", attack_id)
 
 	hurtbox_hit.emit(hit_result)
 
@@ -310,7 +315,7 @@ func _spawn_swept_trace_debug_mesh(points: PackedVector3Array, linger_time: floa
 	mesh_instance.name = "DebugSweptTrace"
 
 	var array_mesh := ArrayMesh.new()
-	var arrays := []
+	var arrays: Array = []
 	arrays.resize(Mesh.ARRAY_MAX)
 
 	var vertices := PackedVector3Array()
@@ -329,7 +334,6 @@ func _spawn_swept_trace_debug_mesh(points: PackedVector3Array, linger_time: floa
 	# 6 current outer lower
 	# 7 current outer upper
 
-	# Six quad faces, two triangles each.
 	_add_quad_indices(indices, 0, 2, 3, 1) # previous sample face
 	_add_quad_indices(indices, 4, 5, 7, 6) # current sample face
 	_add_quad_indices(indices, 0, 1, 5, 4) # inner side
@@ -346,19 +350,29 @@ func _spawn_swept_trace_debug_mesh(points: PackedVector3Array, linger_time: floa
 	if debug_material != null:
 		mesh_instance.material_override = debug_material
 
-	# Important:
-	# Points are already world-space, so add this under the scene root
-	# rather than under the moving HitboxEmitter.
+	# Points are already world-space.
 	get_tree().current_scene.add_child(mesh_instance)
 
-	active_debug_meshes.append(mesh_instance)
+	# Swept traces should linger instead of being cleared every frame.
+	lingering_debug_meshes.append(mesh_instance)
 
-	if linger_time > 0.0:
-		var timer := get_tree().create_timer(linger_time)
-		timer.timeout.connect(func() -> void:
-			if is_instance_valid(mesh_instance):
-				mesh_instance.queue_free()
-		)
+	if linger_time <= 0.0:
+		return
+
+	var mesh_ref :Object = weakref(mesh_instance)
+	var timer := get_tree().create_timer(linger_time)
+
+	timer.timeout.connect(func() -> void:
+		var mesh := mesh_ref.get_ref() as Node3D
+
+		if mesh == null:
+			return
+
+		lingering_debug_meshes.erase(mesh)
+
+		if is_instance_valid(mesh):
+			mesh.queue_free()
+	)
 
 func _add_quad_indices(indices: PackedInt32Array, a: int, b: int, c: int, d: int) -> void:
 	indices.append(a)

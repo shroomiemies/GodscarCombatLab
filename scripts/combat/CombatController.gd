@@ -11,6 +11,7 @@ enum CombatState {
 signal attack_started(attack_data: AttackData)
 signal attack_phase_changed(new_state: CombatState)
 signal attack_finished()
+signal attack_hit(hit_result: HitResult)
 
 @export var default_attack: AttackData
 @export var hitbox_emitter: HitboxEmitter
@@ -19,6 +20,10 @@ var combat_state: CombatState = CombatState.IDLE
 var current_attack: AttackData
 var attack_time: float = 0.0
 var attack_motion_velocity: Vector3 = Vector3.ZERO
+
+func _ready() -> void:
+	if hitbox_emitter != null:
+		hitbox_emitter.hurtbox_hit.connect(_on_hurtbox_hit)
 
 func _physics_process(delta: float) -> void:
 	attack_motion_velocity = Vector3.ZERO
@@ -176,3 +181,7 @@ func _clear_hitboxes() -> void:
 		return
 
 	hitbox_emitter.clear_debug_hitboxes()
+
+func _on_hurtbox_hit(hit_result: HitResult) -> void:
+	print("CombatController received hit on: ", hit_result.actor.name)
+	attack_hit.emit(hit_result)

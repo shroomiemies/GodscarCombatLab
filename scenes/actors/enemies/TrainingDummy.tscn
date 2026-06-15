@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://qn1gmau2m6bp"]
 
 [ext_resource type="Script" uid="uid://blv6exxri5ifk" path="res://scripts/actor/enemies/TrainingDummy.gd" id="1_6rn6d"]
+[ext_resource type="Script" uid="uid://dvecmyu4g80nr" path="res://scripts/hit_detection/Hurtbox.gd" id="2_8d4dd"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8d4dd"]
 radius = 0.35
@@ -10,6 +11,10 @@ height = 1.6
 top_radius = 0.35
 bottom_radius = 0.35
 height = 1.6
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6j5ib"]
+radius = 0.35
+height = 1.7
 
 [node name="TrainingDummy" type="CharacterBody3D" unique_id=152615839 groups=["targetable"]]
 script = ExtResource("1_6rn6d")
@@ -28,3 +33,12 @@ mesh = SubResource("CylinderMesh_6j5ib")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="DebugRoot" type="Node3D" parent="." unique_id=332152268]
+
+[node name="Hurtbox" type="Area3D" parent="." unique_id=919342272 node_paths=PackedStringArray("owner_actor")]
+collision_layer = 8
+script = ExtResource("2_8d4dd")
+owner_actor = NodePath("..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" unique_id=1577647485]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CapsuleShape3D_6j5ib")

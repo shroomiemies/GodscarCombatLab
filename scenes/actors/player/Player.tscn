@@ -535,9 +535,10 @@ parameters/Grounded/blend_position = Vector2(-0.0008340478, -0.0047392845)
 
 [node name="LeftHandSocket" type="Node3D" parent="CombatRoot" unique_id=504085768]
 
-[node name="HitboxEmitter" type="Node3D" parent="CombatRoot" unique_id=1762749112]
+[node name="HitboxEmitter" type="Node3D" parent="CombatRoot" unique_id=1762749112 node_paths=PackedStringArray("source_actor")]
 script = ExtResource("34_wg8uo")
 debug_material = ExtResource("35_2xlsc")
+source_actor = NodePath("../..")
 
 [node name="VFXRoot" type="Node3D" parent="CombatRoot" unique_id=1376071995]
 

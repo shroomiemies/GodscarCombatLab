@@ -1,21 +1,28 @@
 class_name HitboxEmitter
 extends Node3D
 
+signal hurtbox_hit(hit_result: HitResult)
+
 @export var debug_material: Material
 @export var linger_debug_material: Material
+@export_flags_3d_physics var hurtbox_collision_mask: int = 1 << 3
+@export var source_actor: Node3D
 
 var active_debug_meshes: Array[Node3D] = []
 var lingering_debug_meshes: Array[Node3D] = []
-
 var previous_attack_time: float = 0.0
 var previous_global_transform: Transform3D
 var has_previous_trace_sample: bool = false
+var hit_actors_this_attack: Dictionary = {}
+var current_attack_data: AttackData
 
 func _ready() -> void:
 	previous_global_transform = global_transform
 
 func begin_attack_trace() -> void:
 	clear_debug_hitboxes()
+	hit_actors_this_attack.clear()
+	current_attack_data = null
 	previous_attack_time = 0.0
 	previous_global_transform = global_transform
 	has_previous_trace_sample = false
@@ -35,9 +42,13 @@ func clear_all_debug_hitboxes() -> void:
 			mesh.queue_free()
 
 	lingering_debug_meshes.clear()
+	current_attack_data = null
+	has_previous_trace_sample = false
 
 func show_attack_debug(attack_data: AttackData, attack_time: float) -> void:
 	clear_debug_hitboxes()
+
+	current_attack_data = attack_data
 
 	if attack_data == null:
 		has_previous_trace_sample = false
@@ -155,6 +166,64 @@ func _show_weapon_trace(
 		)
 
 		_spawn_swept_trace_debug_mesh(points, trace.debug_linger_time)
+		_query_swept_trace_hits(points)
+
+func _query_swept_trace_hits(points: PackedVector3Array) -> void:
+	if points.size() != 8:
+		return
+
+	var shape := ConvexPolygonShape3D.new()
+	shape.points = points
+
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = shape
+	query.transform = Transform3D.IDENTITY
+	query.collision_mask = hurtbox_collision_mask
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+
+	var space_state := get_world_3d().direct_space_state
+	var results := space_state.intersect_shape(query, 32)
+
+	for result in results:
+		var collider :Object = result.get("collider")
+
+		if collider == null:
+			continue
+
+		if not collider is Hurtbox:
+			continue
+
+		var hurtbox := collider as Hurtbox
+		_register_hurtbox_hit(hurtbox)
+
+func _register_hurtbox_hit(hurtbox: Hurtbox) -> void:
+	if hurtbox == null:
+		return
+
+	var hit_actor := hurtbox.get_owner_actor()
+
+	if hit_actor == null:
+		return
+
+	if source_actor != null and hit_actor == source_actor:
+		return
+
+	if hit_actors_this_attack.has(hit_actor):
+		return
+
+	hit_actors_this_attack[hit_actor] = true
+
+	var hit_result := HitResult.new()
+	hit_result.hurtbox = hurtbox
+	hit_result.actor = hit_actor
+	hit_result.attack_data = current_attack_data
+	hit_result.source = source_actor
+	hit_result.hit_position = hurtbox.global_position
+
+	print("Hit: ", hit_actor.name, " with ", current_attack_data.attack_id if current_attack_data != null else "unknown_attack")
+
+	hurtbox_hit.emit(hit_result)
 
 func _get_subsegment_count(trace: WeaponTraceData, from_t: float, to_t: float) -> int:
 	var crossed_fraction :float = abs(to_t - from_t)

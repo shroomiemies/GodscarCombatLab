@@ -51,6 +51,9 @@ func try_start_attack(attack_data: AttackData) -> bool:
 	current_attack = attack_data
 	attack_time = 0.0
 	combat_state = CombatState.STARTUP
+	
+	if hitbox_emitter != null:
+		hitbox_emitter.begin_attack_trace()
 
 	print("Attack started: ", current_attack.attack_id)
 	attack_started.emit(current_attack)
@@ -166,7 +169,7 @@ func _update_hitboxes() -> void:
 	if hitbox_emitter == null:
 		return
 
-	hitbox_emitter.show_hit_volumes(current_attack, attack_time)
+	hitbox_emitter.show_attack_debug(current_attack, attack_time)
 
 func _clear_hitboxes() -> void:
 	if hitbox_emitter == null:

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WeaponTraceData" format=3 uid="uid://prp5642h544"]
+
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="1_x6spg"]
+
+[resource]
+script = ExtResource("1_x6spg")
+metadata/_custom_type_script = "uid://d18uxhhjg74nc"

@@ -24,3 +24,6 @@ extends Resource
 
 @export_group("Hit Volumes")
 @export var hit_volumes: Array[HitVolumeData] = []
+
+@export_group("Weapon Traces")
+@export var weapon_traces: Array[WeaponTraceData] = []

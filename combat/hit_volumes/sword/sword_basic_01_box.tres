@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="HitVolumeData" format=3 uid="uid://c34mx8o0eon3d"]
+
+[ext_resource type="Script" uid="uid://2capoepq10aa" path="res://scripts/combat/data/HitVolumeData.gd" id="1_2ifju"]
+
+[resource]
+script = ExtResource("1_2ifju")
+box_size = Vector3(1.2, 1, 0.8)
+metadata/_custom_type_script = "uid://2capoepq10aa"

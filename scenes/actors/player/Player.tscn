@@ -31,6 +31,8 @@
 [ext_resource type="AnimationLibrary" uid="uid://dev3je8hujepm" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Dodge Right.fbx" id="33_y5gqk"]
 [ext_resource type="AnimationLibrary" uid="uid://bry1pmh13opo8" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Standing Up.fbx" id="34_6px3x"]
 [ext_resource type="Script" uid="uid://d4jvq26gqv0e" path="res://scripts/combat/targeting/TargetingController.gd" id="34_tfhuq"]
+[ext_resource type="Script" uid="uid://ddyrmeg07lcex" path="res://scripts/hit_detection/HitboxEmitter.gd" id="34_wg8uo"]
+[ext_resource type="Material" uid="uid://dd430t8e5vb08" path="res://art/materials/debug/hitbox_active.tres" id="35_2xlsc"]
 [ext_resource type="PackedScene" uid="uid://dqpwsyowmy4c2" path="res://scenes/debug/TargetMarker.tscn" id="35_86qw2"]
 [ext_resource type="AnimationLibrary" uid="uid://bc8oyfk1wld4i" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Sword And Shield Idle.fbx" id="35_r6xt7"]
 [ext_resource type="AnimationLibrary" uid="uid://ccx2rpxkrgh0v" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Sword And Shield Slash.fbx" id="36_yaggx"]
@@ -533,7 +535,9 @@ parameters/Grounded/blend_position = Vector2(-0.0008340478, -0.0047392845)
 
 [node name="LeftHandSocket" type="Node3D" parent="CombatRoot" unique_id=504085768]
 
-[node name="HitBoxRoot" type="Node3D" parent="CombatRoot" unique_id=1762749112]
+[node name="HitboxEmitter" type="Node3D" parent="CombatRoot" unique_id=1762749112]
+script = ExtResource("34_wg8uo")
+debug_material = ExtResource("35_2xlsc")
 
 [node name="VFXRoot" type="Node3D" parent="CombatRoot" unique_id=1376071995]
 
@@ -548,9 +552,10 @@ script = ExtResource("2_u84y5")
 animation_player = NodePath("../VisualRoot/PlayerVisual/CharacterModel/AnimationPlayer")
 animation_tree = NodePath("../VisualRoot/PlayerVisual/CharacterModel/AnimationTree")
 
-[node name="CombatController" type="Node" parent="." unique_id=2131586980]
+[node name="CombatController" type="Node" parent="." unique_id=2131586980 node_paths=PackedStringArray("hitbox_emitter")]
 script = ExtResource("37_sbx71")
 default_attack = ExtResource("38_r01j6")
+hitbox_emitter = NodePath("../CombatRoot/HitboxEmitter")
 
 [editable path="VisualRoot/PlayerVisual"]
 [editable path="VisualRoot/PlayerVisual/CharacterModel"]

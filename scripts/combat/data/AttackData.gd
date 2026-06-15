@@ -21,3 +21,6 @@ extends Resource
 
 @export_group("Animation")
 @export var animation_name: StringName = &""
+
+@export_group("Hit Volumes")
+@export var hit_volumes: Array[HitVolumeData] = []

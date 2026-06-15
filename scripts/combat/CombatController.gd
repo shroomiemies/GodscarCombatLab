@@ -13,6 +13,7 @@ signal attack_phase_changed(new_state: CombatState)
 signal attack_finished()
 
 @export var default_attack: AttackData
+@export var hitbox_emitter: HitboxEmitter
 
 var combat_state: CombatState = CombatState.IDLE
 var current_attack: AttackData
@@ -28,6 +29,7 @@ func _physics_process(delta: float) -> void:
 	attack_time += delta
 	_update_attack_phase()
 	_update_attack_motion_velocity(delta)
+	_update_hitboxes()
 
 func can_start_attack() -> bool:
 	return combat_state == CombatState.IDLE
@@ -101,6 +103,7 @@ func _finish_attack() -> void:
 	current_attack = null
 	attack_time = 0.0
 
+	_clear_hitboxes()
 	attack_finished.emit()
 
 func is_attacking() -> bool:
@@ -158,3 +161,15 @@ func _update_attack_motion_velocity(delta: float) -> void:
 	
 func get_attack_motion_velocity() -> Vector3:
 	return attack_motion_velocity
+	
+func _update_hitboxes() -> void:
+	if hitbox_emitter == null:
+		return
+
+	hitbox_emitter.show_hit_volumes(current_attack, attack_time)
+
+func _clear_hitboxes() -> void:
+	if hitbox_emitter == null:
+		return
+
+	hitbox_emitter.clear_debug_hitboxes()

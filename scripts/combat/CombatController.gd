@@ -34,6 +34,8 @@ var strong_release_requested: bool = false
 var strong_charge_time: float = 0.0
 var stored_strong_charge_time: float = 0.0
 var current_attack_charge_fraction: float = 0.0
+var current_main_hand_trace_origin_offset: Vector3 = Vector3(0.28, 0.0, 0.0)
+var current_off_hand_trace_origin_offset: Vector3 = Vector3(-0.28, 0.0, 0.0)
 
 func _ready() -> void:
 	if hitbox_emitter != null:
@@ -469,6 +471,12 @@ func equip_weapon_style(style_data: WeaponStyleData) -> void:
 
 	default_attack = style_data.default_basic_attack
 	default_strong_attack = style_data.default_strong_attack
+
+	current_main_hand_trace_origin_offset = style_data.main_hand_trace_origin_offset
+	current_off_hand_trace_origin_offset = style_data.off_hand_trace_origin_offset
+
+	if hitbox_emitter != null:
+		hitbox_emitter.trace_origin_offset = current_main_hand_trace_origin_offset
 
 	print("Equipped weapon style: ", style_data.display_name)
 

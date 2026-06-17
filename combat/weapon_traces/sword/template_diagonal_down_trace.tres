@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WeaponTraceData" format=3 uid="uid://dnfnle68s0gl1"]
+
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="1_uhq01"]
+
+[resource]
+script = ExtResource("1_uhq01")
+end_time = 0.42
+sample_count = 8
+trace_mode = 1
+start_angle_degrees = 70.0
+vertical_arc_forward_offset = -0.95
+vertical_arc_start_height = 1.55
+vertical_arc_end_height = 0.75
+vertical_arc_start_x = 0.65
+vertical_arc_end_x = -0.55
+vertical_arc_depth_radius = 0.25
+debug_linger_time = 0.25
+metadata/_custom_type_script = "uid://d18uxhhjg74nc"

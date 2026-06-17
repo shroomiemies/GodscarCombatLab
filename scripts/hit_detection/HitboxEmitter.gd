@@ -7,6 +7,7 @@ signal hurtbox_hit(hit_result: HitResult)
 @export var linger_debug_material: Material
 @export_flags_3d_physics var hurtbox_collision_mask: int = 1 << 3
 @export var source_actor: Node3D
+@export var trace_origin_offset: Vector3 = Vector3.ZERO
 
 var active_debug_meshes: Array[Node3D] = []
 var lingering_debug_meshes: Array[Node3D] = []
@@ -276,45 +277,26 @@ func _build_swept_trace_points(
 	return points
 
 func _get_trace_sample_points(
-	trace: WeaponTraceData,
-	normalized_time: float,
-	base_transform: Transform3D
-) -> Array[Vector3]:
-	var local_transform := Transform3D(
-		Basis.from_euler(Vector3(
-			deg_to_rad(trace.local_rotation_degrees.x),
-			deg_to_rad(trace.local_rotation_degrees.y),
-			deg_to_rad(trace.local_rotation_degrees.z)
-		)),
-		trace.local_position
-	)
+	trace: WeaponTraceData,normalized_time: float,base_transform: Transform3D) -> Array[Vector3]:
+	var origin_transform := Transform3D(Basis.IDENTITY, trace_origin_offset)
+	var local_transform := _get_trace_local_transform(trace)
+	var combined_transform := base_transform * origin_transform * local_transform
 
-	var combined_transform := base_transform * local_transform
+	match trace.trace_mode:
+		WeaponTraceData.TraceMode.HORIZONTAL_ARC:
+			return _get_horizontal_arc_sample_points(trace, normalized_time, combined_transform)
 
-	var angle :float = lerp(deg_to_rad(trace.start_angle_degrees)
-		,deg_to_rad(trace.end_angle_degrees),
-		normalized_time
-	)
+		WeaponTraceData.TraceMode.VERTICAL_ARC:
+			return _get_vertical_arc_sample_points(trace, normalized_time, combined_transform)
 
-	var direction := Vector3(sin(angle), 0.0, -cos(angle)).normalized()
+		WeaponTraceData.TraceMode.THRUST:
+			return _get_thrust_sample_points(trace, normalized_time, combined_transform)
 
-	var inner_center := direction * trace.inner_radius
-	var outer_center := direction * trace.outer_radius
+		WeaponTraceData.TraceMode.LINEAR:
+			return _get_linear_sample_points(trace, normalized_time, combined_transform)
 
-	var lower_y := trace.height - trace.vertical_thickness * 0.5
-	var upper_y := trace.height + trace.vertical_thickness * 0.5
-
-	var inner_lower := inner_center + Vector3(0.0, lower_y, 0.0)
-	var inner_upper := inner_center + Vector3(0.0, upper_y, 0.0)
-	var outer_lower := outer_center + Vector3(0.0, lower_y, 0.0)
-	var outer_upper := outer_center + Vector3(0.0, upper_y, 0.0)
-
-	return [
-		combined_transform * inner_lower,
-		combined_transform * inner_upper,
-		combined_transform * outer_lower,
-		combined_transform * outer_upper,
-	]
+		_:
+			return _get_horizontal_arc_sample_points(trace, normalized_time, combined_transform)
 
 func _spawn_swept_trace_debug_mesh(points: PackedVector3Array, linger_time: float) -> void:
 	if points.size() != 8:
@@ -391,3 +373,176 @@ func _add_quad_indices(indices: PackedInt32Array, a: int, b: int, c: int, d: int
 	indices.append(a)
 	indices.append(c)
 	indices.append(d)
+
+func _get_trace_local_transform(trace: WeaponTraceData) -> Transform3D:
+	var local_basis := Basis()
+	local_basis = local_basis.rotated(Vector3.RIGHT, deg_to_rad(trace.local_rotation_degrees.x))
+	local_basis = local_basis.rotated(Vector3.UP, deg_to_rad(trace.local_rotation_degrees.y))
+	local_basis = local_basis.rotated(Vector3.FORWARD, deg_to_rad(trace.local_rotation_degrees.z))
+
+	return Transform3D(local_basis, trace.local_position)
+	
+func _get_horizontal_arc_sample_points(
+	trace: WeaponTraceData,
+	normalized_time: float,
+	combined_transform: Transform3D
+) -> Array[Vector3]:
+	var angle :float = lerp(
+		deg_to_rad(trace.start_angle_degrees), deg_to_rad(trace.end_angle_degrees), normalized_time)
+
+	var radial_direction := Vector3(sin(angle), 0.0, -cos(angle)).normalized()
+	var tangent_direction := Vector3(cos(angle), 0.0, sin(angle)).normalized()
+	var up_direction := Vector3.UP
+
+	var center_radius := (trace.inner_radius + trace.outer_radius) * 0.5
+	var width := trace.outer_radius - trace.inner_radius
+	var height_size := trace.vertical_thickness
+
+	var center := radial_direction * center_radius + Vector3(0.0, trace.height, 0.0)
+
+	return _build_oriented_sample_rectangle(
+		center,
+		radial_direction,
+		up_direction,
+		width,
+		height_size,
+		combined_transform
+	)
+	
+func _get_vertical_arc_sample_points(
+	trace: WeaponTraceData,
+	normalized_time: float,
+	combined_transform: Transform3D
+) -> Array[Vector3]:
+	var x :float = lerp(trace.vertical_arc_start_x, trace.vertical_arc_end_x, normalized_time)
+	var y :float = lerp(trace.vertical_arc_start_height, trace.vertical_arc_end_height, normalized_time)
+
+	# Add a subtle curve in depth so overhead chops do not look like a flat elevator.
+	var arc_curve := sin(normalized_time * PI)
+	var z := trace.vertical_arc_forward_offset - arc_curve * trace.vertical_arc_depth_radius
+
+	var center := Vector3(x, y, z)
+
+	var path_direction := Vector3(
+		trace.vertical_arc_end_x - trace.vertical_arc_start_x,
+		trace.vertical_arc_end_height - trace.vertical_arc_start_height,
+		0.0
+	)
+
+	if path_direction.length_squared() < 0.0001:
+		path_direction = Vector3.DOWN
+
+	path_direction = path_direction.normalized()
+
+	# Width runs across the character for vertical cuts.
+	var width_axis := Vector3.RIGHT
+
+	# Height axis follows the vertical travel direction.
+	var height_axis := path_direction
+
+	# If path direction is too parallel to width axis, fall back.
+	if abs(width_axis.dot(height_axis)) > 0.95:
+		height_axis = Vector3.UP
+
+	return _build_oriented_sample_rectangle(
+		center,
+		width_axis,
+		height_axis,
+		trace.trace_width,
+		trace.trace_height,
+		combined_transform
+	)
+	
+func _get_thrust_sample_points(
+	trace: WeaponTraceData,
+	normalized_time: float,
+	combined_transform: Transform3D
+) -> Array[Vector3]:
+	var center := trace.start_position.lerp(trace.end_position, normalized_time)
+
+	var thrust_direction := (trace.end_position - trace.start_position)
+
+	if thrust_direction.length_squared() < 0.0001:
+		thrust_direction = Vector3.FORWARD * -1.0
+
+	thrust_direction = thrust_direction.normalized()
+
+	var width_axis := Vector3.RIGHT
+	var height_axis := Vector3.UP
+
+	return _build_oriented_sample_rectangle(
+		center,
+		width_axis,
+		height_axis,
+		trace.trace_width,
+		trace.trace_height,
+		combined_transform
+	)
+	
+func _get_linear_sample_points(
+	trace: WeaponTraceData,
+	normalized_time: float,
+	combined_transform: Transform3D
+) -> Array[Vector3]:
+	var center := trace.start_position.lerp(trace.end_position, normalized_time)
+
+	var movement_direction := trace.end_position - trace.start_position
+
+	if movement_direction.length_squared() < 0.0001:
+		movement_direction = Vector3(0.0, 0.0, -1.0)
+
+	movement_direction = movement_direction.normalized()
+
+	var width_axis := Vector3.RIGHT
+	var height_axis := Vector3.UP
+
+	return _build_oriented_sample_rectangle(
+		center,
+		width_axis,
+		height_axis,
+		trace.trace_width,
+		trace.trace_height,
+		combined_transform
+	)
+	
+func _build_oriented_sample_rectangle(
+	center: Vector3,
+	width_axis: Vector3,
+	height_axis: Vector3,
+	width: float,
+	height_size: float,
+	transform: Transform3D
+) -> Array[Vector3]:
+	if width_axis.length_squared() < 0.0001:
+		width_axis = Vector3.RIGHT
+
+	if height_axis.length_squared() < 0.0001:
+		height_axis = Vector3.UP
+
+	width_axis = width_axis.normalized()
+	height_axis = height_axis.normalized()
+
+	# Make axes orthogonal enough for a stable rectangle.
+	height_axis = (height_axis - width_axis * height_axis.dot(width_axis))
+
+	if height_axis.length_squared() < 0.0001:
+		height_axis = Vector3.UP
+
+	height_axis = height_axis.normalized()
+
+	var half_width := width * 0.5
+	var half_height := height_size * 0.5
+
+	var left := center - width_axis * half_width
+	var right := center + width_axis * half_width
+	var lower_left := left - height_axis * half_height
+	var upper_left := left + height_axis * half_height
+	var lower_right := right - height_axis * half_height
+	var upper_right := right + height_axis * half_height
+
+	return [
+		transform * lower_left,
+		transform * upper_left,
+		transform * lower_right,
+		transform * upper_right,
+	]

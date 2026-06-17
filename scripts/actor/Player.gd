@@ -70,9 +70,15 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("lock_on"):
 		_toggle_lock_on()
-		
+
 	if event.is_action_pressed("attack_main"):
 		_try_main_attack()
+
+	if event.is_action_pressed("attack_offhand"):
+		_begin_strong_attack()
+
+	if event.is_action_released("attack_offhand"):
+		_release_strong_attack()
 	
 func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
@@ -318,7 +324,13 @@ func _try_main_attack() -> void:
 	if combat_controller == null:
 		return
 
-	combat_controller.try_start_default_attack()
+	combat_controller.receive_basic_input()
+	
+func _try_strong_attack() -> void:
+	if combat_controller == null:
+		return
+
+	combat_controller.receive_strong_input()
 
 func _get_horizontal_velocity() -> Vector3:
 	return Vector3(velocity.x, 0.0, velocity.z)
@@ -387,3 +399,15 @@ func _sync_locomotion_velocity_after_slide() -> void:
 
 	locomotion_velocity.x = velocity.x
 	locomotion_velocity.z = velocity.z
+
+func _begin_strong_attack() -> void:
+	if combat_controller == null:
+		return
+
+	combat_controller.begin_strong_input()
+
+func _release_strong_attack() -> void:
+	if combat_controller == null:
+		return
+
+	combat_controller.release_strong_input()

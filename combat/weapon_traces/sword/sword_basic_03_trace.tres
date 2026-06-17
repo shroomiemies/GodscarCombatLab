@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WeaponTraceData" format=3 uid="uid://dmm78kyqqam6v"]
+
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="1_c7250"]
+
+[resource]
+script = ExtResource("1_c7250")
+height = 1.25
+vertical_thickness = 0.55
+start_angle_degrees = 80.0
+end_angle_degrees = -20.0
+metadata/_custom_type_script = "uid://d18uxhhjg74nc"

@@ -27,3 +27,20 @@ extends Resource
 
 @export_group("Weapon Traces")
 @export var weapon_traces: Array[WeaponTraceData] = []
+
+@export_group("Combo")
+@export var basic_followup: AttackData
+@export var strong_followup: AttackData
+@export var combo_input_open_time: float = 0.25
+@export var combo_input_close_time: float = 0.65
+@export var combo_chain_time: float = 0.65
+@export var allow_self_chain: bool = false
+@export var strong_combo_chain_time: float = -1.0  	#Use combo_chain_time unless this attack defines a special strong-chain time.
+@export var strong_combo_max_hold_extension: float = 1.0
+@export var strong_combo_auto_release_on_timeout: bool = true
+
+@export_group("Charge")
+@export var can_charge: bool = false
+@export var min_charge_time: float = 0.0
+@export var max_charge_time: float = 0.45
+@export var charge_power_bonus: float = 0.25

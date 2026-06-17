@@ -4,4 +4,5 @@
 
 [resource]
 script = ExtResource("1_x6spg")
+start_angle_degrees = 70.0
 metadata/_custom_type_script = "uid://d18uxhhjg74nc"

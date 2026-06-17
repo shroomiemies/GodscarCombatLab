@@ -40,6 +40,7 @@
 [ext_resource type="AnimationLibrary" uid="uid://bvfgx1r640epp" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Walking.fbx" id="37_w8b8q"]
 [ext_resource type="AnimationLibrary" uid="uid://boucd0f2awvio" path="res://art/characters/player_placeholder/mixamo_blue_male/animations/Walking Backwards.fbx" id="38_byteq"]
 [ext_resource type="Resource" uid="uid://t6o74g0evcwl" path="res://combat/attacks/sword/sword_basic_01.tres" id="38_r01j6"]
+[ext_resource type="Resource" uid="uid://b2anemgpc6pfd" path="res://combat/attacks/sword/sword_strong_01.tres" id="41_2xlsc"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lxwhc"]
 radius = 0.35
@@ -557,6 +558,7 @@ animation_tree = NodePath("../VisualRoot/PlayerVisual/CharacterModel/AnimationTr
 script = ExtResource("37_sbx71")
 default_attack = ExtResource("38_r01j6")
 hitbox_emitter = NodePath("../CombatRoot/HitboxEmitter")
+default_strong_attack = ExtResource("41_2xlsc")
 
 [editable path="VisualRoot/PlayerVisual"]
 [editable path="VisualRoot/PlayerVisual/CharacterModel"]

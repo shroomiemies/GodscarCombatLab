@@ -15,6 +15,7 @@ var previous_global_transform: Transform3D
 var has_previous_trace_sample: bool = false
 var hit_actors_this_attack: Dictionary = {}
 var current_attack_data: AttackData
+var current_attack_charge_fraction: float = 0.0
 
 func _ready() -> void:
 	previous_global_transform = global_transform
@@ -23,6 +24,7 @@ func begin_attack_trace() -> void:
 	clear_debug_hitboxes()
 	hit_actors_this_attack.clear()
 	current_attack_data = null
+	current_attack_charge_fraction = 0.0
 	previous_attack_time = 0.0
 	previous_global_transform = global_transform
 	has_previous_trace_sample = false
@@ -45,10 +47,15 @@ func clear_all_debug_hitboxes() -> void:
 	current_attack_data = null
 	has_previous_trace_sample = false
 
-func show_attack_debug(attack_data: AttackData, attack_time: float) -> void:
+func show_attack_debug(
+	attack_data: AttackData,
+	attack_time: float,
+	attack_charge_fraction: float = 0.0
+) -> void:
 	clear_debug_hitboxes()
 
 	current_attack_data = attack_data
+	current_attack_charge_fraction = attack_charge_fraction
 
 	if attack_data == null:
 		has_previous_trace_sample = false
@@ -219,6 +226,7 @@ func _register_hurtbox_hit(hurtbox: Hurtbox) -> void:
 	hit_result.actor = hit_actor
 	hit_result.attack_data = current_attack_data
 	hit_result.source = source_actor
+	hit_result.charge_fraction = current_attack_charge_fraction
 	hit_result.hit_position = hurtbox.global_position
 
 	var attack_id: StringName = &"unknown_attack"
@@ -226,7 +234,8 @@ func _register_hurtbox_hit(hurtbox: Hurtbox) -> void:
 	if current_attack_data != null:
 		attack_id = current_attack_data.attack_id
 
-	print("Hit: ", hit_actor.name, " with ", attack_id)
+	print("Hit: ",hit_actor.name," with ",attack_id," charge ",
+		str(roundi(current_attack_charge_fraction * 100.0)),"%")
 
 	hurtbox_hit.emit(hit_result)
 

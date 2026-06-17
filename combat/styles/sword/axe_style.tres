@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeaponStyleData" format=3 uid="uid://d1c4vxmup006j"]
+
+[ext_resource type="Resource" uid="uid://dkgvi2044bti4" path="res://combat/attacks/sword/axe_basic_01.tres" id="1_32hdh"]
+[ext_resource type="Resource" uid="uid://ctgj2do62j1sa" path="res://combat/attacks/sword/axe_strong_01.tres" id="2_4yy73"]
+[ext_resource type="Script" uid="uid://cvt1h1nfxvs0i" path="res://scripts/combat/data/WeaponStyleData.gd" id="3_tj6ku"]
+
+[resource]
+script = ExtResource("3_tj6ku")
+style_id = &"axe"
+display_name = "Axe"
+default_basic_attack = ExtResource("1_32hdh")
+default_strong_attack = ExtResource("2_4yy73")
+debug_description = "Forward pressure style. Basics carry forward; strong attacks chase hard."
+metadata/_custom_type_script = "uid://cvt1h1nfxvs0i"

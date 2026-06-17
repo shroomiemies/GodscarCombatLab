@@ -461,3 +461,19 @@ func _is_waiting_for_strong_release() -> bool:
 		and current_attack.strong_followup != null
 		and strong_input_held
 	)
+
+func equip_weapon_style(style_data: WeaponStyleData) -> void:
+	if style_data == null:
+		push_warning("Tried to equip null WeaponStyleData.")
+		return
+
+	default_attack = style_data.default_basic_attack
+	default_strong_attack = style_data.default_strong_attack
+
+	print("Equipped weapon style: ", style_data.display_name)
+
+	if default_attack == null:
+		push_warning("Weapon style has no default_basic_attack: " + str(style_data.style_id))
+
+	if default_strong_attack == null:
+		push_warning("Weapon style has no default_strong_attack: " + str(style_data.style_id))

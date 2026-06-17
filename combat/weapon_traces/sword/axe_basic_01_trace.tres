@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="WeaponTraceData" format=3 uid="uid://kfu8y2u4b0vb"]
+
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="1_h7705"]
+
+[resource]
+script = ExtResource("1_h7705")
+inner_radius = 0.45
+metadata/_custom_type_script = "uid://d18uxhhjg74nc"

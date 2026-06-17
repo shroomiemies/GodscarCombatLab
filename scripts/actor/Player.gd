@@ -36,6 +36,7 @@ extends CharacterBody3D
 @onready var animation_controller: CharacterAnimationController = $AnimationController
 @onready var targeting_controller: TargetingController = $TargetingController
 @onready var combat_controller: CombatController = $CombatController
+@onready var weapon_loadout_controller: WeaponLoadoutController = $WeaponLoadoutController
 
 var current_local_movement_input: Vector2 = Vector2.ZERO
 var current_locomotion_blend_value: float = 0.0
@@ -79,6 +80,24 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event.is_action_released("attack_offhand"):
 		_release_strong_attack()
+		
+	if event.is_action_pressed("weapon_style_1"):
+		_equip_weapon_style_index(0)
+
+	if event.is_action_pressed("weapon_style_2"):
+		_equip_weapon_style_index(1)
+
+	if event.is_action_pressed("weapon_style_3"):
+		_equip_weapon_style_index(2)
+
+	if event.is_action_pressed("weapon_style_4"):
+		_equip_weapon_style_index(3)
+
+	if event.is_action_pressed("weapon_next"):
+		_equip_next_weapon_style()
+
+	if event.is_action_pressed("weapon_previous"):
+		_equip_previous_weapon_style()
 	
 func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
@@ -411,3 +430,24 @@ func _release_strong_attack() -> void:
 		return
 
 	combat_controller.release_strong_input()
+
+func _equip_weapon_style_index(index: int) -> void:
+	if weapon_loadout_controller == null:
+		return
+
+	weapon_loadout_controller.equip_style_by_index(index)
+
+
+func _equip_next_weapon_style() -> void:
+	if weapon_loadout_controller == null:
+		return
+
+	weapon_loadout_controller.equip_next_style()
+
+
+func _equip_previous_weapon_style() -> void:
+	if weapon_loadout_controller == null:
+		return
+
+	weapon_loadout_controller.equip_previous_style()
+	

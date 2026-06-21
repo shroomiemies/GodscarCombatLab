@@ -303,9 +303,13 @@ func _apply_player_movement(delta: float) -> void:
 	movement_basis.x = right
 	movement_basis.y = movement_frame.up
 	movement_basis.z = -forward
+	
+	var movement_lock: float = 1 - combat_controller.get_current_movement_lock_strength()
+	current_locomotion_blend_value *= movement_lock
+	current_locomotion_blend_value -= combat_controller.attack_motion_velocity.z/run_speed
 
 	var world_move := movement_basis * local_move
-	var desired_input_velocity := world_move * target_speed
+	var desired_input_velocity := world_move * target_speed * movement_lock
 
 	_apply_horizontal_locomotion_velocity(desired_input_velocity, input_vector.length(), delta)
 	_apply_attack_motion_velocity(movement_basis, delta)

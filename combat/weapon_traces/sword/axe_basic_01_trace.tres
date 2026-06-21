@@ -4,5 +4,11 @@
 
 [resource]
 script = ExtResource("1_h7705")
+trace_mode = 1
 inner_radius = 0.45
+vertical_thickness = 0.95
+vertical_arc_start_x = 1.0
+vertical_arc_end_x = -1.0
+trace_width = 0.55
+trace_height = 0.55
 metadata/_custom_type_script = "uid://d18uxhhjg74nc"

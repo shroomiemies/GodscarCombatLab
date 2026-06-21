@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://d0s2gr2ihil4r"]
+
+[ext_resource type="Resource" uid="uid://b2aobmrhl6yms" path="res://combat/attacks/sword/spear_basic_02.tres" id="1_7axdf"]
+[ext_resource type="Script" uid="uid://2capoepq10aa" path="res://scripts/combat/data/HitVolumeData.gd" id="1_dpxt2"]
+[ext_resource type="Script" uid="uid://c42vo4ptgbva7" path="res://scripts/combat/data/AttackData.gd" id="2_5fft7"]
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="3_7axdf"]
+[ext_resource type="Resource" uid="uid://dbvastsrhf0ec" path="res://combat/attacks/sword/spear_strong_01.tres" id="4_7nqxr"]
+[ext_resource type="Resource" uid="uid://ci1kx10em4to2" path="res://combat/weapon_traces/sword/spear_basic_01.tres" id="4_dpxt2"]
+
+[resource]
+script = ExtResource("2_5fft7")
+attack_id = &"spear_basic_01"
+total_duration = 0.78
+active_duration = 0.5
+recovery_duration = 0.1
+movement_lock_strength = 0.8
+local_displacement = Vector3(0, 0, -0.15)
+displacement_start_time = 0.18
+displacement_end_time = 0.5
+weapon_traces = Array[ExtResource("3_7axdf")]([ExtResource("4_dpxt2")])
+basic_followup = ExtResource("1_7axdf")
+strong_followup = ExtResource("4_7nqxr")
+combo_input_close_time = 0.68
+combo_chain_time = 0.6
+strong_combo_chain_time = 0.38
+metadata/_custom_type_script = "uid://c42vo4ptgbva7"

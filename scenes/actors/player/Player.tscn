@@ -45,6 +45,8 @@
 [ext_resource type="Script" uid="uid://cvt1h1nfxvs0i" path="res://scripts/combat/data/WeaponStyleData.gd" id="43_puhal"]
 [ext_resource type="Resource" uid="uid://bd6i4pv61s718" path="res://combat/styles/sword/sword_style.tres" id="44_lmjor"]
 [ext_resource type="Resource" uid="uid://d1c4vxmup006j" path="res://combat/styles/sword/axe_style.tres" id="45_puhal"]
+[ext_resource type="Resource" uid="uid://hdadkuaqy6wf" path="res://combat/styles/sword/mace_style.tres" id="46_hhmvh"]
+[ext_resource type="Resource" uid="uid://qtxvit2uusku" path="res://combat/styles/sword/spear_style.tres" id="47_l2qnj"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lxwhc"]
 radius = 0.35
@@ -567,7 +569,7 @@ default_strong_attack = ExtResource("41_2xlsc")
 [node name="WeaponLoadoutController" type="Node" parent="." unique_id=212277532 node_paths=PackedStringArray("combat_controller")]
 script = ExtResource("42_iehuc")
 combat_controller = NodePath("../CombatController")
-available_styles = Array[ExtResource("43_puhal")]([ExtResource("44_lmjor"), ExtResource("45_puhal")])
+available_styles = Array[ExtResource("43_puhal")]([ExtResource("44_lmjor"), ExtResource("45_puhal"), ExtResource("46_hhmvh"), ExtResource("47_l2qnj")])
 metadata/_custom_type_script = "uid://b83xsiri4yxqd"
 
 [editable path="VisualRoot/PlayerVisual"]

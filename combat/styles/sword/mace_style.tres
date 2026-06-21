@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeaponStyleData" format=3 uid="uid://hdadkuaqy6wf"]
+
+[ext_resource type="Resource" uid="uid://dvg4v6bvycy1c" path="res://combat/attacks/sword/mace_basic_01.tres" id="1_p1mni"]
+[ext_resource type="Resource" uid="uid://c7h6h5eb2edn" path="res://combat/attacks/sword/mace_strong_01.tres" id="2_788ks"]
+[ext_resource type="Script" uid="uid://cvt1h1nfxvs0i" path="res://scripts/combat/data/WeaponStyleData.gd" id="3_b61kf"]
+
+[resource]
+script = ExtResource("3_b61kf")
+style_id = &"mace"
+display_name = "Mace"
+default_basic_attack = ExtResource("1_p1mni")
+default_strong_attack = ExtResource("2_788ks")
+debug_description = "Stationary/rooted combat, high impact, large/tough enemy punishment "
+metadata/_custom_type_script = "uid://cvt1h1nfxvs0i"

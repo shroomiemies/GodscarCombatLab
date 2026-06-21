@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponTraceData" format=3 uid="uid://c7m0yq7yyca8w"]
+
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="1_qpdxa"]
+
+[resource]
+script = ExtResource("1_qpdxa")
+start_time = 0.28
+start_angle_degrees = -55.0
+end_angle_degrees = 25.0
+start_position = Vector3(0, 1.15, -0.45)
+end_position = Vector3(-0.3, 1.15, -2.25)
+trace_width = 0.28
+trace_height = 0.28
+debug_linger_time = 0.25
+metadata/_custom_type_script = "uid://d18uxhhjg74nc"

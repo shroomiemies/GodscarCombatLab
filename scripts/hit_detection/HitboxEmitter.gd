@@ -281,7 +281,7 @@ func _get_trace_sample_points(
 	var origin_transform := Transform3D(Basis.IDENTITY, trace_origin_offset)
 	var local_transform := _get_trace_local_transform(trace)
 	var combined_transform := base_transform * origin_transform * local_transform
-
+ 
 	match trace.trace_mode:
 		WeaponTraceData.TraceMode.HORIZONTAL_ARC:
 			return _get_horizontal_arc_sample_points(trace, normalized_time, combined_transform)

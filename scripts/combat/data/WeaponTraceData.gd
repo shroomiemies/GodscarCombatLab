@@ -20,8 +20,8 @@ enum TraceMode {
 @export var inner_radius: float = 0.35
 @export var outer_radius: float = 1.35
 @export var height: float = 1.1
-@export var vertical_thickness: float = 0.45	#height of horizontal slash band
-@export var blade_thickness: float = 0.25		#front/back thickness of slash band
+@export var vertical_thickness: float = 0.45	# Horizontal-arc vertical band thickness.
+@export var blade_thickness: float = 0.25		# Arc-band thickness perpendicular to blade length.
 
 @export_group("Horizontal Arc")
 @export var start_angle_degrees: float = 55.0

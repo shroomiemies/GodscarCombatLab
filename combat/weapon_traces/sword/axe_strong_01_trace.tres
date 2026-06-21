@@ -12,5 +12,6 @@ height = 1.15
 vertical_thickness = 0.55
 start_angle_degrees = -35.0
 end_angle_degrees = 35.0
+vertical_arc_forward_offset = -0.01
 debug_linger_time = 0.25
 metadata/_custom_type_script = "uid://d18uxhhjg74nc"

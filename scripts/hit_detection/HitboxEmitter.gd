@@ -383,12 +383,9 @@ func _get_trace_local_transform(trace: WeaponTraceData) -> Transform3D:
 	return Transform3D(local_basis, trace.local_position)
 	
 func _get_horizontal_arc_sample_points(
-	trace: WeaponTraceData,
-	normalized_time: float,
-	combined_transform: Transform3D
-) -> Array[Vector3]:
-	var angle :float = lerp(
-		deg_to_rad(trace.start_angle_degrees), deg_to_rad(trace.end_angle_degrees), normalized_time)
+	trace: WeaponTraceData, normalized_time: float,
+	combined_transform: Transform3D) -> Array[Vector3]:
+	var angle :float = lerp(deg_to_rad(trace.start_angle_degrees), deg_to_rad(trace.end_angle_degrees), normalized_time)
 
 	var radial_direction := Vector3(sin(angle), 0.0, -cos(angle)).normalized()
 	var tangent_direction := Vector3(cos(angle), 0.0, sin(angle)).normalized()
@@ -412,17 +409,24 @@ func _get_horizontal_arc_sample_points(
 func _get_vertical_arc_sample_points(
 	trace: WeaponTraceData,
 	normalized_time: float,
-	combined_transform: Transform3D
-) -> Array[Vector3]:
-	var x :float = lerp(trace.vertical_arc_start_x, trace.vertical_arc_end_x, normalized_time)
-	var y :float = lerp(trace.vertical_arc_start_height, trace.vertical_arc_end_height, normalized_time)
+	combined_transform: Transform3D) -> Array[Vector3]:
+	var x :float = lerp(
+		trace.vertical_arc_start_x,
+		trace.vertical_arc_end_x,
+		normalized_time
+	)
 
-	# Add a subtle curve in depth so overhead chops do not look like a flat elevator.
+	var y :float = lerp(
+		trace.vertical_arc_start_height,
+		trace.vertical_arc_end_height,
+		normalized_time
+	)
+
 	var arc_curve := sin(normalized_time * PI)
-	var z := trace.vertical_arc_forward_offset - arc_curve * trace.vertical_arc_depth_radius
+	var z := trace.vertical_arc_forward_offset \
+		- arc_curve * trace.vertical_arc_depth_radius
 
-	var center := Vector3(x, y, z)
-
+	# Direction the blade is traveling through space.
 	var path_direction := Vector3(
 		trace.vertical_arc_end_x - trace.vertical_arc_start_x,
 		trace.vertical_arc_end_height - trace.vertical_arc_start_height,
@@ -434,22 +438,22 @@ func _get_vertical_arc_sample_points(
 
 	path_direction = path_direction.normalized()
 
-	# Width runs across the character for vertical cuts.
-	var width_axis := Vector3.RIGHT
+	var center_radius := (trace.inner_radius + trace.outer_radius) * 0.5
+	var blade_length := trace.outer_radius - trace.inner_radius
 
-	# Height axis follows the vertical travel direction.
-	var height_axis := path_direction
+	var center := Vector3(x,y,
+		trace.vertical_arc_forward_offset - center_radius - arc_curve * trace.vertical_arc_depth_radius
+	)
 
-	# If path direction is too parallel to width axis, fall back.
-	if abs(width_axis.dot(height_axis)) > 0.95:
-		height_axis = Vector3.UP
+	var blade_length_axis := Vector3.FORWARD
+	var blade_thickness_axis := Vector3.RIGHT
 
 	return _build_oriented_sample_rectangle(
 		center,
-		width_axis,
-		height_axis,
-		trace.trace_width,
-		trace.trace_height,
+		blade_length_axis,
+		blade_thickness_axis,
+		blade_length,
+		trace.blade_thickness,
 		combined_transform
 	)
 	

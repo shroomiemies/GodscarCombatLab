@@ -363,16 +363,6 @@ func _has_buffered_combo_input() -> bool:
 	
 func _start_chained_attack(next_attack: AttackData, charge_fraction: float = 0.0) -> void:
 	_start_attack_internal(next_attack, charge_fraction)
-	
-func _clear_stale_combo_buffer() -> void:
-	if current_attack == null:
-		buffered_combo_input = BufferedComboInput.NONE
-		return
-
-	if attack_time > current_attack.combo_input_close_time:
-		if buffered_combo_input != BufferedComboInput.NONE:
-			print("Combo buffer expired.")
-		buffered_combo_input = BufferedComboInput.NONE
 
 func _update_strong_charge(delta: float) -> void:
 	if not strong_input_held:

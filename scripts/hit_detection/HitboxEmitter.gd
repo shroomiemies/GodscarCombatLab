@@ -29,6 +29,9 @@ func begin_attack_trace() -> void:
 	previous_attack_time = 0.0
 	previous_global_transform = global_transform
 	has_previous_trace_sample = false
+	
+func get_hit_count_this_attack() -> int:
+	return hit_actors_this_attack.size()
 
 func clear_debug_hitboxes() -> void:
 	for mesh in active_debug_meshes:

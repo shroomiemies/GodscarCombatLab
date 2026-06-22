@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://dawleowx5jiei" path="res://scripts/actor/Player.gd" id="2_vy3pw"]
 [ext_resource type="PackedScene" uid="uid://yxt4hw7ybxe" path="res://scenes/camera/CameraRig.tscn" id="3_4difj"]
 [ext_resource type="Script" uid="uid://bp4b1fp6fn6k1" path="res://scripts/camera/CameraRig.gd" id="4_xdqrp"]
+[ext_resource type="Script" uid="uid://chmg50mqjpoja" path="res://scripts/debug/DebugOverlay.gd" id="6_ifb2d"]
+[ext_resource type="Script" uid="uid://bxjetma16a1j1" path="res://scripts/debug/DebugStateLabel.gd" id="7_t5t5f"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vy3pw"]
 
@@ -39,3 +41,27 @@ camera_rig = NodePath("../CameraRig")
 [node name="CameraRig" parent="." unique_id=843206497 node_paths=PackedStringArray("target") instance=ExtResource("3_4difj")]
 script = ExtResource("4_xdqrp")
 target = NodePath("../Player")
+
+[node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=716135574 node_paths=PackedStringArray("panel", "state_label")]
+script = ExtResource("6_ifb2d")
+panel = NodePath("DebugPanel")
+state_label = NodePath("DebugPanel/MarginContainer/DebugStateLabel")
+
+[node name="DebugPanel" type="PanelContainer" parent="DebugOverlay" unique_id=1438617686]
+custom_minimum_size = Vector2(440, 0)
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="DebugOverlay/DebugPanel" unique_id=1902225897]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="DebugStateLabel" type="Label" parent="DebugOverlay/DebugPanel/MarginContainer" unique_id=584467581 node_paths=PackedStringArray("player")]
+layout_mode = 2
+script = ExtResource("7_t5t5f")
+player = NodePath("../../../../Player")
+metadata/_custom_type_script = "uid://bxjetma16a1j1"

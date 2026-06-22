@@ -30,6 +30,7 @@ extends Resource
 
 @export_group("Combo")
 @export var basic_followup: AttackData
+@export var basic_loops_to_default: bool = false
 @export var strong_followup: AttackData
 @export var combo_input_open_time: float = 0.25
 @export var combo_input_close_time: float = 0.65

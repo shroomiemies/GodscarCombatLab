@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://c2sis5luax4w6"]
 
+[ext_resource type="Resource" uid="uid://t6o74g0evcwl" path="res://combat/attacks/sword/sword_basic_01.tres" id="1_eimcr"]
 [ext_resource type="Script" uid="uid://2capoepq10aa" path="res://scripts/combat/data/HitVolumeData.gd" id="1_ot1id"]
 [ext_resource type="Script" uid="uid://c42vo4ptgbva7" path="res://scripts/combat/data/AttackData.gd" id="2_eimcr"]
 [ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="3_g67kx"]
@@ -14,6 +15,7 @@ movement_lock_strength = 0.8
 displacement_start_time = 0.18
 displacement_end_time = 0.5
 weapon_traces = Array[ExtResource("3_g67kx")]([ExtResource("4_ot1id")])
+basic_followup = ExtResource("1_eimcr")
 combo_input_close_time = 0.68
 combo_chain_time = 0.6
 metadata/_custom_type_script = "uid://c42vo4ptgbva7"

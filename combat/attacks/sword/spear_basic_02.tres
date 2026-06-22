@@ -17,6 +17,7 @@ local_displacement = Vector3(0, 0, -0.15)
 displacement_start_time = 0.18
 displacement_end_time = 0.5
 weapon_traces = Array[ExtResource("3_y7535")]([ExtResource("4_3kr3r")])
+basic_loops_to_default = true
 strong_followup = ExtResource("3_riikv")
 combo_input_close_time = 0.68
 combo_chain_time = 0.6

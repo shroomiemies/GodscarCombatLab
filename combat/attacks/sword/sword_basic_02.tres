@@ -16,6 +16,7 @@ movement_lock_strength = 0.8
 displacement_start_time = 0.18
 displacement_end_time = 0.5
 weapon_traces = Array[ExtResource("3_ak8s3")]([ExtResource("4_pwb13")])
+basic_loops_to_default = true
 strong_followup = ExtResource("4_ak8s3")
 combo_input_close_time = 0.68
 combo_chain_time = 0.6

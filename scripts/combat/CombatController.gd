@@ -336,7 +336,14 @@ func _get_followup_for_input(combo_input: BufferedComboInput) -> AttackData:
 
 	match combo_input:
 		BufferedComboInput.BASIC:
-			return current_attack.basic_followup
+			if current_attack.basic_followup != null:
+				return current_attack.basic_followup
+
+			if current_attack.basic_loops_to_default:
+				return default_attack
+
+			return null
+
 		BufferedComboInput.STRONG:
 			return current_attack.strong_followup
 		_:

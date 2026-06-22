@@ -8,6 +8,7 @@ start_time = 0.3
 end_time = 0.62
 sample_count = 8
 trace_mode = 1
+blade_thickness = 0.45
 start_angle_degrees = -45.0
 end_angle_degrees = 45.0
 vertical_arc_forward_offset = -0.01

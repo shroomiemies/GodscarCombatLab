@@ -1048,7 +1048,7 @@ Status: **Mostly complete**
 * ~~Folder structure~~
 * ~~Input map foundation~~
 * ~~Test arena~~
-* Debug overlay
+* ~~Debug overlay~~
 * ~~Basic character scene~~
 * ~~Placeholder model/animations~~
 * ~~Git/version control~~
@@ -1072,10 +1072,10 @@ Status: **Partially complete**
 * ~~Third-person movement~~
 * ~~Camera follow~~
 * ~~Lock-on target~~
-* Safe sprint
+* ~~Safe sprint~~
 * Basic dodge
 * ~~MovementFrame stub returning world frame~~
-* Debug speed/state display
+* ~~Debug speed/state display~~
 * ~~Air acceleration rather than air speed bleed~~
 * ~~Jump/fall/landing state foundation~~
 

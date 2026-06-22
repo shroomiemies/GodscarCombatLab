@@ -62,6 +62,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="DebugStateLabel" type="Label" parent="DebugOverlay/DebugPanel/MarginContainer" unique_id=584467581 node_paths=PackedStringArray("player")]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 script = ExtResource("7_t5t5f")
 player = NodePath("../../../../Player")
 metadata/_custom_type_script = "uid://bxjetma16a1j1"

@@ -32,8 +32,6 @@ extends Resource
 @export var basic_followup: AttackData
 @export var basic_loops_to_default: bool = false
 @export var strong_followup: AttackData
-@export var combo_input_open_time: float = 0.25
-@export var combo_input_close_time: float = 0.65
 @export var combo_chain_time: float = 0.65
 @export var allow_self_chain: bool = false
 @export var strong_combo_chain_time: float = -1.0  	#Use combo_chain_time unless this attack defines a special strong-chain time.

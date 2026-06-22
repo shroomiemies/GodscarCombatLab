@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://cvt1h1nfxvs0i" path="res://scripts/combat/data/WeaponStyleData.gd" id="1_41noh"]
 [ext_resource type="Resource" uid="uid://t6o74g0evcwl" path="res://combat/attacks/sword/sword_basic_01.tres" id="1_wma6l"]
 [ext_resource type="Resource" uid="uid://cyf2tw3kt621u" path="res://combat/attacks/sword/template_thrust.tres" id="2_wma6l"]
+[ext_resource type="Resource" uid="uid://s166sahuhojq" path="res://combat/attacks/sword/sword_basic_sprint.tres" id="4_a8jke"]
+[ext_resource type="Resource" uid="uid://cqwvp5rc2ptbk" path="res://combat/attacks/sword/sword_strong_sprint.tres" id="5_xun4e"]
 
 [resource]
 script = ExtResource("1_41noh")
@@ -10,5 +12,7 @@ style_id = &"sword"
 display_name = "Sword"
 default_basic_attack = ExtResource("1_wma6l")
 default_strong_attack = ExtResource("2_wma6l")
+sprint_basic_attack = ExtResource("4_a8jke")
+sprint_strong_attack = ExtResource("5_xun4e")
 debug_description = " Lateral pressure style. Basics maintain pressure; strong attacks sidestep with commitment."
 metadata/_custom_type_script = "uid://cvt1h1nfxvs0i"

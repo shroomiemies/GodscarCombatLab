@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://s166sahuhojq"]
+
+[ext_resource type="Script" uid="uid://2capoepq10aa" path="res://scripts/combat/data/HitVolumeData.gd" id="1_g84wq"]
+[ext_resource type="Script" uid="uid://c42vo4ptgbva7" path="res://scripts/combat/data/AttackData.gd" id="2_8i0ok"]
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="3_phpgc"]
+[ext_resource type="Resource" uid="uid://bveast5dc11oq" path="res://combat/weapon_traces/sword/template_thrust_trace.tres" id="4_klisp"]
+
+[resource]
+script = ExtResource("2_8i0ok")
+attack_id = &"sword_basic_sprint"
+total_duration = 1.1
+startup_duration = 0.3
+active_duration = 0.5
+recovery_duration = 0.2
+movement_lock_strength = 0.9
+local_displacement = Vector3(0, 0, -12)
+displacement_start_time = 0.01
+displacement_end_time = 0.7
+allow_rotation_during_active = true
+weapon_traces = Array[ExtResource("3_phpgc")]([ExtResource("4_klisp")])
+combo_input_close_time = 0.68
+combo_chain_time = 0.6
+strong_combo_chain_time = 0.38
+metadata/_custom_type_script = "uid://c42vo4ptgbva7"

@@ -36,6 +36,9 @@ var stored_strong_charge_time: float = 0.0
 var current_attack_charge_fraction: float = 0.0
 var current_main_hand_trace_origin_offset: Vector3 = Vector3(0.28, 0.0, 0.0)
 var current_off_hand_trace_origin_offset: Vector3 = Vector3(-0.28, 0.0, 0.0)
+var sprint_basic_attack: AttackData
+var sprint_strong_attack: AttackData
+var held_strong_entry_attack: AttackData
 
 func _ready() -> void:
 	if hitbox_emitter != null:
@@ -237,13 +240,25 @@ func _on_hurtbox_hit(hit_result: HitResult) -> void:
 	print("CombatController received hit on: ", hit_result.actor.name)
 	attack_hit.emit(hit_result)
 
-func receive_basic_input() -> void:
+func receive_basic_input(use_sprint_entry: bool = false) -> void:
 	if combat_state == CombatState.IDLE:
-		try_start_default_attack()
+		var entry_attack := _get_basic_entry_attack(use_sprint_entry)
+
+		if entry_attack == null:
+			push_warning("CombatController has no basic entry attack assigned.")
+			return
+
+		try_start_attack(entry_attack)
 		return
 
 	_try_buffer_combo_input(BufferedComboInput.BASIC)
 	_try_chain_buffered_combo()
+
+func _get_basic_entry_attack(use_sprint_entry: bool) -> AttackData:
+	if use_sprint_entry and sprint_basic_attack != null:
+		return sprint_basic_attack
+
+	return default_attack
 
 func _try_chain_buffered_combo() -> void:
 	if current_attack == null:
@@ -405,14 +420,23 @@ func _get_buffered_strong_charge_fraction(next_attack: AttackData) -> float:
 
 	return _get_charge_fraction_for_attack(next_attack, charge_time)
 	
-func begin_strong_input() -> void:
+func begin_strong_input(use_sprint_entry: bool = false) -> void:
 	strong_input_held = true
 	strong_release_requested = false
 	strong_charge_time = 0.0
 	stored_strong_charge_time = 0.0
 
-	if combat_state != CombatState.IDLE:
-		_try_buffer_combo_input(BufferedComboInput.STRONG)
+	if combat_state == CombatState.IDLE:
+		held_strong_entry_attack = _get_strong_entry_attack(use_sprint_entry)
+		return
+
+	_try_buffer_combo_input(BufferedComboInput.STRONG)
+	
+func _get_strong_entry_attack(use_sprint_entry: bool) -> AttackData:
+	if use_sprint_entry and sprint_strong_attack != null:
+		return sprint_strong_attack
+
+	return default_strong_attack
 		
 func release_strong_input() -> void:
 	if not strong_input_held:
@@ -422,16 +446,19 @@ func release_strong_input() -> void:
 	strong_input_held = false
 
 	if combat_state == CombatState.IDLE:
-		if default_strong_attack == null:
+		var entry_attack := held_strong_entry_attack
+
+		if entry_attack == null:
+			push_warning("CombatController has no strong entry attack assigned.")
 			_clear_strong_charge_state()
 			return
 
 		var charge_fraction := _get_charge_fraction_for_attack(
-			default_strong_attack,
+			entry_attack,
 			stored_strong_charge_time
 		)
 
-		try_start_attack_with_charge(default_strong_attack, charge_fraction)
+		try_start_attack_with_charge(entry_attack, charge_fraction)
 		_clear_strong_charge_state()
 		return
 
@@ -446,6 +473,7 @@ func _clear_strong_charge_state() -> void:
 	strong_release_requested = false
 	strong_charge_time = 0.0
 	stored_strong_charge_time = 0.0	
+	held_strong_entry_attack = null
 
 func _get_current_attack_end_time() -> float:
 	if current_attack == null:
@@ -478,6 +506,8 @@ func equip_weapon_style(style_data: WeaponStyleData) -> void:
 
 	default_attack = style_data.default_basic_attack
 	default_strong_attack = style_data.default_strong_attack
+	sprint_basic_attack = style_data.sprint_basic_attack
+	sprint_strong_attack = style_data.sprint_strong_attack
 
 	current_main_hand_trace_origin_offset = style_data.main_hand_trace_origin_offset
 	current_off_hand_trace_origin_offset = style_data.off_hand_trace_origin_offset

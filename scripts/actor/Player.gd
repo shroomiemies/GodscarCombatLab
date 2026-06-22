@@ -24,6 +24,8 @@ extends CharacterBody3D
 @export var landing_acceleration: float = 8.0
 @export var ground_deceleration: float = 22.0
 @export var air_deceleration: float = 0.0
+@export_group("Sprint")
+@export var sprint_attack_min_speed: float = 5.15
 
 @export_group("Landing")
 @export var heavy_land_velocity: float = 12.0
@@ -41,6 +43,8 @@ extends CharacterBody3D
 var current_local_movement_input: Vector2 = Vector2.ZERO
 var current_locomotion_blend_value: float = 0.0
 var current_speed_fraction: float = 0.0
+var sprint_enabled: bool = false
+var is_sprinting: bool = false
 var movement_frame: MovementFrame
 var movement_state: MovementState = MovementState.GROUNDED
 var locomotion_velocity: Vector3 = Vector3.ZERO
@@ -71,6 +75,15 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("lock_on"):
 		_toggle_lock_on()
+
+	if event.is_action_pressed("sprint"):
+		_enable_sprint()
+	
+	if event.is_action_released("move_forward"):
+		_disable_sprint()
+		
+	if event.is_action_pressed("walk"):
+		_disable_sprint()
 
 	if event.is_action_pressed("attack_main"):
 		_try_main_attack()
@@ -280,12 +293,23 @@ func _apply_player_movement(delta: float) -> void:
 	var target_speed := jog_speed
 	current_locomotion_blend_value = jog_blend_value
 
-	if Input.is_action_pressed("walk"):
+	var walk_held := Input.is_action_pressed("walk")
+
+	if walk_held:
 		target_speed = walk_speed
 		current_locomotion_blend_value = walk_blend_value
-	elif Input.is_action_pressed("sprint"):
+
+	elif sprint_enabled:
 		target_speed = run_speed
 		current_locomotion_blend_value = run_blend_value
+
+	is_sprinting = (
+		sprint_enabled
+		and not walk_held
+		and input_vector.length() > 0.0
+		and movement_state == MovementState.GROUNDED
+		and is_on_floor()
+	)
 
 	if input_vector.length() <= 0.0:
 		current_locomotion_blend_value = 0.0
@@ -342,13 +366,33 @@ func _toggle_lock_on() -> void:
 		camera_rig.set_lock_on_target(targeting_controller.current_target)
 	else:
 		camera_rig.clear_lock_on_target()
+
+func _enable_sprint() -> void:
+	sprint_enabled = true
+	print("Sprint enabled: ", sprint_enabled)
+	
+func _disable_sprint() -> void:
+	sprint_enabled = false
+	print("Sprint enabled: ", sprint_enabled)
 		
 func _try_main_attack() -> void:
 	if combat_controller == null:
 		return
 
-	combat_controller.receive_basic_input()
-	
+	combat_controller.receive_basic_input(_can_start_sprint_attack())
+
+func _can_start_sprint_attack() -> bool:
+	if not sprint_enabled:
+		return false
+
+	if movement_state != MovementState.GROUNDED:
+		return false
+
+	if not is_on_floor():
+		return false
+
+	return locomotion_velocity.length() >= sprint_attack_min_speed
+
 func _try_strong_attack() -> void:
 	if combat_controller == null:
 		return
@@ -427,7 +471,7 @@ func _begin_strong_attack() -> void:
 	if combat_controller == null:
 		return
 
-	combat_controller.begin_strong_input()
+	combat_controller.begin_strong_input(_can_start_sprint_attack())
 
 func _release_strong_attack() -> void:
 	if combat_controller == null:

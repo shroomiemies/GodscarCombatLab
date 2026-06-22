@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AttackData" format=3 uid="uid://cxdwxq4hccclf"]
+
+[ext_resource type="Script" uid="uid://2capoepq10aa" path="res://scripts/combat/data/HitVolumeData.gd" id="1_m77it"]
+[ext_resource type="Script" uid="uid://c42vo4ptgbva7" path="res://scripts/combat/data/AttackData.gd" id="2_pjigb"]
+[ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="3_2ke3m"]
+[ext_resource type="Resource" uid="uid://dpebcua8losm0" path="res://combat/weapon_traces/sword/axe_strong_01_trace.tres" id="4_v26tr"]
+
+[resource]
+script = ExtResource("2_pjigb")
+attack_id = &"axe_strong_sprint"
+total_duration = 1.1
+startup_duration = 0.3
+active_duration = 0.5
+recovery_duration = 0.3
+local_displacement = Vector3(0, 0, -12)
+displacement_start_time = 0.01
+displacement_end_time = 0.7
+allow_rotation_during_active = true
+weapon_traces = Array[ExtResource("3_2ke3m")]([ExtResource("4_v26tr")])
+combo_input_close_time = 0.68
+combo_chain_time = 0.6
+can_charge = true
+min_charge_time = 0.1
+metadata/_custom_type_script = "uid://c42vo4ptgbva7"

@@ -8,6 +8,10 @@ extends Resource
 @export var default_basic_attack: AttackData
 @export var default_strong_attack: AttackData
 
+@export_group("Sprint Entry Attacks")
+@export var sprint_basic_attack: AttackData
+@export var sprint_strong_attack: AttackData
+
 @export_group("Trace Origin")
 @export var main_hand_trace_origin_offset: Vector3 = Vector3(0.28, 0.0, 0.0)
 @export var off_hand_trace_origin_offset: Vector3 = Vector3(-0.28, 0.0, 0.0)

@@ -79,7 +79,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("sprint"):
 		_enable_sprint()
 	
-	if event.is_action_released("move_forward"):
+	if event.is_action_released("move_forward") or event.is_action_released("move_left") or event.is_action_released("move_right") or event.is_action_released("move_backward"):
 		_disable_sprint()
 		
 	if event.is_action_pressed("walk"):

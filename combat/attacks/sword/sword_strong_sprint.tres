@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://2capoepq10aa" path="res://scripts/combat/data/HitVolumeData.gd" id="1_hjdpi"]
 [ext_resource type="Script" uid="uid://c42vo4ptgbva7" path="res://scripts/combat/data/AttackData.gd" id="2_3yllg"]
 [ext_resource type="Script" uid="uid://d18uxhhjg74nc" path="res://scripts/combat/data/WeaponTraceData.gd" id="3_kx8dw"]
-[ext_resource type="Resource" uid="uid://bveast5dc11oq" path="res://combat/weapon_traces/sword/template_thrust_trace.tres" id="4_k1euu"]
+[ext_resource type="Resource" uid="uid://bveast5dc11oq" path="res://combat/weapon_traces/template_thrust_trace.tres" id="4_k1euu"]
 
 [resource]
 script = ExtResource("2_3yllg")

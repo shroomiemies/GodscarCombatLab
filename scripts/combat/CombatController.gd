@@ -329,9 +329,6 @@ func _try_buffer_combo_input(combo_input: BufferedComboInput) -> void:
 	if current_attack == null:
 		return
 
-	if not _is_combo_input_window_open():
-		return
-
 	var followup := _get_followup_for_input(combo_input)
 
 	if followup == null:
@@ -341,9 +338,6 @@ func _try_buffer_combo_input(combo_input: BufferedComboInput) -> void:
 
 	print("Buffered combo input: ", BufferedComboInput.keys()[combo_input])
 	
-func _is_combo_input_window_open() -> bool:
-	#placeholder
-	return current_attack != null 
 
 func _get_followup_for_input(combo_input: BufferedComboInput) -> AttackData:
 	if current_attack == null:

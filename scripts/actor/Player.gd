@@ -24,8 +24,16 @@ extends CharacterBody3D
 @export var landing_acceleration: float = 8.0
 @export var ground_deceleration: float = 22.0
 @export var air_deceleration: float = 0.0
+
 @export_group("Sprint")
 @export var sprint_attack_min_speed: float = 5.15
+
+@export_group("Dodge")
+@export_range(0.05, 0.40, 0.01) var dodge_roll_hold_threshold: float = 0.16
+@export_range(0.10, 5.00, 0.05) var quick_step_distance: float = 1.75
+@export_range(0.05, 1.00, 0.01) var quick_step_duration: float = 0.18
+@export_range(0.10, 8.00, 0.05) var roll_distance: float = 4.25
+@export_range(0.05, 1.50, 0.01) var roll_duration: float = 0.52
 
 @export_group("Landing")
 @export var heavy_land_velocity: float = 12.0
@@ -53,6 +61,15 @@ var was_on_floor: bool = false
 var last_fall_speed: float = 0.0
 var current_landing_type: LandingType = LandingType.LIGHT
 var current_land_duration: float = 0.12
+var dodge_input_pending: bool = false
+var dodge_input_held: bool = false
+var dodge_hold_time: float = 0.0
+var current_dodge_type: int = DodgeType.NONE
+var current_dodge_duration: float = 0.0
+var current_dodge_distance: float = 0.0
+# Stored relative to MovementFrame so future platform support can reuse it.
+var dodge_frame_direction: Vector3 = Vector3.ZERO
+var dodge_motion_velocity: Vector3 = Vector3.ZERO
 var jump_buffer_timer: float = 0.0
 var coyote_timer: float = 0.0
 
@@ -61,6 +78,8 @@ enum MovementState {
 	JUMP_START,
 	AIRBORNE,
 	LANDING,
+	DODGE_QUICK_STEP,
+	DODGE_ROLL,
 }
 
 enum LandingType {
@@ -69,17 +88,29 @@ enum LandingType {
 	IMPACT,
 }
 
+enum DodgeType {
+	NONE,
+	QUICK_STEP,
+	ROLL,
+}
+
 func _ready() -> void:
 	movement_frame = MovementFrame.world()
 	
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("lock_on"):
 		_toggle_lock_on()
+		
+	if event.is_action_pressed("dodge"):
+		_begin_dodge_input()
+
+	if event.is_action_released("dodge"):
+		_release_dodge_input()
 
 	if event.is_action_pressed("sprint"):
 		_enable_sprint()
 	
-	if event.is_action_released("move_forward") or event.is_action_released("move_left") or event.is_action_released("move_right") or event.is_action_released("move_backward"):
+	if event.is_action_released("move_forward") or event.is_action_released("move_left") or event.is_action_released("move_right") or event.is_action_released("move_back"):
 		_disable_sprint()
 		
 	if event.is_action_pressed("walk"):
@@ -117,11 +148,12 @@ func _physics_process(delta: float) -> void:
 	
 	_update_timers(delta)
 	_update_movement_frame()
+	_update_dodge_input(delta)
 	_update_look_facing(delta)
 	_update_movement_state(delta)
 	_apply_player_movement(delta)
+	
 	_update_fall_speed()
-
 	move_and_slide()
 
 	_after_movement(delta)
@@ -193,6 +225,10 @@ func _update_movement_state(delta: float) -> void:
 				_start_jump()
 			elif movement_state_time >= current_land_duration:
 				_start_grounded()
+				
+		MovementState.DODGE_QUICK_STEP, MovementState.DODGE_ROLL:
+			if movement_state_time >= current_dodge_duration:
+				_finish_dodge()
 
 func _can_start_jump() -> bool:
 	if jump_buffer_timer <= 0.0:
@@ -207,10 +243,192 @@ func _update_fall_speed() -> void:
 	if velocity.y < 0.0:
 		last_fall_speed = max(last_fall_speed, abs(velocity.y))
 
+func _begin_dodge_input() -> void:
+	if dodge_input_pending or _is_dodging():
+		return
+
+	if not _can_start_dodge():
+		return
+
+	dodge_input_pending = true
+	dodge_input_held = true
+	dodge_hold_time = 0.0
+
+func _release_dodge_input() -> void:
+	if not dodge_input_held:
+		return
+
+	dodge_input_held = false
+
+	if not dodge_input_pending:
+		return
+
+	dodge_input_pending = false
+	_try_start_dodge(DodgeType.QUICK_STEP)
+
+func _update_dodge_input(delta: float) -> void:
+	if not dodge_input_pending:
+		return
+
+	if not dodge_input_held:
+		return
+
+	dodge_hold_time += delta
+
+	if dodge_hold_time < dodge_roll_hold_threshold:
+		return
+
+	dodge_input_pending = false
+	_try_start_dodge(DodgeType.ROLL)
+
+func _can_start_dodge() -> bool:
+	if movement_state != MovementState.GROUNDED:
+		return false
+
+	if not is_on_floor():
+		return false
+
+	if combat_controller != null and combat_controller.is_attacking():
+		return false
+
+	return true
+
+func _try_start_dodge(dodge_type: int) -> bool:
+	if not _can_start_dodge():
+		return false
+
+	var dodge_world_direction := _get_dodge_world_direction()
+	if dodge_world_direction.length_squared() <= 0.0001:
+		return false
+
+	var next_movement_state := MovementState.GROUNDED
+
+	match dodge_type:
+		DodgeType.QUICK_STEP:
+			current_dodge_distance = quick_step_distance
+			current_dodge_duration = quick_step_duration
+			next_movement_state = MovementState.DODGE_QUICK_STEP
+
+		DodgeType.ROLL:
+			current_dodge_distance = roll_distance
+			current_dodge_duration = roll_duration
+			next_movement_state = MovementState.DODGE_ROLL
+
+		_:
+			return false
+
+	current_dodge_type = dodge_type
+
+	if movement_frame != null:
+		dodge_frame_direction = movement_frame.world_direction_to_local(
+			dodge_world_direction
+		).normalized()
+	else:
+		dodge_frame_direction = dodge_world_direction
+
+	dodge_motion_velocity = Vector3.ZERO
+	locomotion_velocity = Vector3.ZERO
+
+	movement_state = next_movement_state
+	movement_state_time = 0.0
+
+	print("Dodge started: ", DodgeType.keys()[current_dodge_type])
+	return true
+
+func _finish_dodge() -> void:
+	dodge_motion_velocity = Vector3.ZERO
+	current_dodge_type = DodgeType.NONE
+	current_dodge_duration = 0.0
+	current_dodge_distance = 0.0
+	dodge_frame_direction = Vector3.ZERO
+
+	if is_on_floor():
+		_start_grounded()
+	else:
+		_start_airborne()
+
+func _is_dodging() -> bool:
+	return (
+		movement_state == MovementState.DODGE_QUICK_STEP
+		or movement_state == MovementState.DODGE_ROLL
+	)
+
+func _get_current_movement_basis() -> Basis:
+	var forward := -global_transform.basis.z
+	var right := global_transform.basis.x
+
+	forward.y = 0.0
+	right.y = 0.0
+
+	forward = forward.normalized()
+	right = right.normalized()
+
+	var movement_basis := Basis()
+	movement_basis.x = right
+	movement_basis.y = movement_frame.up
+	movement_basis.z = -forward
+
+	return movement_basis
+
+func _get_dodge_world_direction() -> Vector3:
+	var input_vector := Input.get_vector(
+		"move_left",
+		"move_right",
+		"move_forward",
+		"move_back"
+	)
+
+	var local_direction := Vector3(input_vector.x, 0.0, input_vector.y)
+
+	# No directional input means a defensive backstep/backward roll.
+	if local_direction.length_squared() <= 0.0001:
+		local_direction = Vector3.BACK
+	else:
+		local_direction = local_direction.normalized()
+
+	var world_direction := _get_current_movement_basis() * local_direction
+	world_direction.y = 0.0
+
+	if world_direction.length_squared() <= 0.0001:
+		return Vector3.ZERO
+
+	return world_direction.normalized()
+
+func _apply_dodge_motion_velocity() -> void:
+	if current_dodge_duration <= 0.0:
+		dodge_motion_velocity = Vector3.ZERO
+		return
+
+	var world_direction := dodge_frame_direction
+	var frame_up := Vector3.UP
+
+	if movement_frame != null:
+		world_direction = movement_frame.local_direction_to_world(
+			dodge_frame_direction
+		)
+		frame_up = movement_frame.up
+
+	world_direction = world_direction.slide(frame_up)
+
+	if world_direction.length_squared() <= 0.0001:
+		dodge_motion_velocity = Vector3.ZERO
+		return
+
+	dodge_motion_velocity = (
+		world_direction.normalized()
+		* (current_dodge_distance / current_dodge_duration)
+	)
+
+	velocity.x = dodge_motion_velocity.x
+	velocity.z = dodge_motion_velocity.z
+
 func _after_movement(_delta: float) -> void:
-	if movement_state == MovementState.AIRBORNE and is_on_floor():
+	if _is_dodging() and not is_on_floor():
+		_finish_dodge()
+
+	elif movement_state == MovementState.AIRBORNE and is_on_floor():
 		_start_landing()
-	
+
 	_sync_locomotion_velocity_after_slide()
 	
 func _start_grounded() -> void:
@@ -273,6 +491,15 @@ func _get_landing_type() -> LandingType:
 	return LandingType.LIGHT
 	
 func _apply_player_movement(delta: float) -> void:
+	if _is_dodging():
+		is_sprinting = false
+		current_local_movement_input = Vector2.ZERO
+		current_locomotion_blend_value = 0.0
+
+		_apply_dodge_motion_velocity()
+		_apply_gravity(delta)
+		return
+	
 	var input_vector := Input.get_vector(
 		"move_left",
 		"move_right",
@@ -314,19 +541,7 @@ func _apply_player_movement(delta: float) -> void:
 	if input_vector.length() <= 0.0:
 		current_locomotion_blend_value = 0.0
 
-	var forward := -global_transform.basis.z
-	var right := global_transform.basis.x
-
-	forward.y = 0.0
-	right.y = 0.0
-
-	forward = forward.normalized()
-	right = right.normalized()
-
-	var movement_basis := Basis()
-	movement_basis.x = right
-	movement_basis.y = movement_frame.up
-	movement_basis.z = -forward
+	var movement_basis := _get_current_movement_basis()
 	
 	var movement_lock: float = 1 - combat_controller.get_current_movement_lock_strength()
 	current_locomotion_blend_value *= movement_lock
@@ -376,6 +591,9 @@ func _disable_sprint() -> void:
 	print("Sprint enabled: ", sprint_enabled)
 		
 func _try_main_attack() -> void:
+	if _is_dodging() or dodge_input_pending:
+		return
+
 	if combat_controller == null:
 		return
 
@@ -461,6 +679,9 @@ func _apply_gravity(delta: float) -> void:
 			velocity.y = 0.0
 			
 func _sync_locomotion_velocity_after_slide() -> void:
+	if _is_dodging():
+		return
+
 	if combat_controller != null and combat_controller.is_attacking():
 		return
 
@@ -468,6 +689,9 @@ func _sync_locomotion_velocity_after_slide() -> void:
 	locomotion_velocity.z = velocity.z
 
 func _begin_strong_attack() -> void:
+	if _is_dodging() or dodge_input_pending:
+		return
+
 	if combat_controller == null:
 		return
 

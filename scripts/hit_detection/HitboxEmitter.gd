@@ -518,7 +518,7 @@ func _build_oriented_sample_rectangle(
 	height_axis: Vector3,
 	width: float,
 	height_size: float,
-	transform: Transform3D
+	_transform: Transform3D
 ) -> Array[Vector3]:
 	if width_axis.length_squared() < 0.0001:
 		width_axis = Vector3.RIGHT
@@ -548,8 +548,8 @@ func _build_oriented_sample_rectangle(
 	var upper_right := right + height_axis * half_height
 
 	return [
-		transform * lower_left,
-		transform * upper_left,
-		transform * lower_right,
-		transform * upper_right,
+		_transform * lower_left,
+		_transform * upper_left,
+		_transform * lower_right,
+		_transform * upper_right,
 	]

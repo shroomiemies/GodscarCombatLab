@@ -13,6 +13,7 @@ extends Node3D
 
 @onready var yaw_pivot: Node3D = $YawPivot
 @onready var pitch_pivot: Node3D = $YawPivot/PitchPivot
+@onready var spring_arm: SpringArm3D = $YawPivot/PitchPivot/SpringArm3D
 
 var yaw: float = 0.0
 var pitch: float = deg_to_rad(-15.0)
@@ -20,9 +21,11 @@ var lock_on_target: Node3D
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 	if target != null:
 		global_position = _get_target_position()
-	
+		_exclude_target_from_spring_arm()
+
 	yaw_pivot.rotation.y = yaw
 	pitch_pivot.rotation.x = pitch
 
@@ -59,6 +62,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
+func _exclude_target_from_spring_arm() -> void:
+	var physics_target := target as PhysicsBody3D
+
+	if physics_target == null:
+		return
+
+	spring_arm.add_excluded_object(physics_target.get_rid())
+	
 func get_flat_camera_basis() -> Basis:
 	var forward := -yaw_pivot.global_transform.basis.z
 	var right := yaw_pivot.global_transform.basis.x

@@ -1152,9 +1152,9 @@ Status: **Started**
 Add in updated order:
 
 1. ~~Sword framework~~
-2. Axe or Spear
-3. Mace
-4. Remaining of Axe/Spear
+2. ~~Axe or Spear~~
+3. ~~Mace~~
+4. ~~Remaining of Axe/Spear~~
 5. Polearm
 6. Dagger
 7. Shield
